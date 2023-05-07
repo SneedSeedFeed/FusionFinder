@@ -26,7 +26,6 @@ export class FusefinderComponent implements OnInit {
         this.pokedex.push({ id: value.id, name: value.name.english, type: value.type, HP: value.base.HP, attack: value.base.Attack, defense: value.base.Defense, spAttack: value.base["Sp. Attack"], spDefense: value.base["Sp. Defense"], speed: value.base.Speed })
       }
     })
-    console.log(this.pokedex)
     console.timeEnd("Init")
   }
 
