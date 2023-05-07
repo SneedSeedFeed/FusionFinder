@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import rawDex from '../../../assets/pokedex.json'
 
 import { pokemon } from '../_interfaces/pokemon';
+import { fusedpokemon } from '../_interfaces/fusedpokemon';
 
 @Component({
   selector: 'app-fusefinder',
@@ -12,6 +13,10 @@ import { pokemon } from '../_interfaces/pokemon';
 export class FusefinderComponent implements OnInit {
 
   pokedex: pokemon[] = []
+
+  fusions: fusedpokemon[] = []
+
+  selectedPokemon!:pokemon
 
   ngOnInit(): void {
     console.time("Init")
@@ -23,12 +28,6 @@ export class FusefinderComponent implements OnInit {
     })
     console.log(this.pokedex)
     console.timeEnd("Init")
-
-    let typhlosion = this.pokedex.find(val => { if (val.name == "Typhlosion") { return true } else { return false } })
-    if (typhlosion) {
-      let results = this.getAllFusions(typhlosion)
-      console.log(results.sort((a,b) => b.spAttack - a.spAttack))
-    }
   }
 
   private isInGame(id: number): Boolean {
@@ -46,8 +45,12 @@ export class FusefinderComponent implements OnInit {
     return false;
   }
 
-  private getAllFusions(toFuse: pokemon): pokemon[] {
-    let results: pokemon[] = []
+  updateFusions(){
+    this.fusions = this.getAllFusions(this.selectedPokemon)
+  }
+
+  private getAllFusions(toFuse: pokemon): fusedpokemon[] {
+    let results: fusedpokemon[] = []
 
     this.pokedex.forEach(val => {
       results.push(this.getFusion(toFuse, val))
@@ -55,11 +58,11 @@ export class FusefinderComponent implements OnInit {
     this.pokedex.forEach(val => {
       results.push(this.getFusion(val, toFuse))
     })
-
+    results.sort((a,b) => this.getBST(b) - this.getBST(a))
     return results
   }
 
-  private getFusion(body: pokemon, head: pokemon): pokemon {
+  private getFusion(body: pokemon, head: pokemon): fusedpokemon {
     return {
       id: 0,
       name: "Body: " + body.name + " Head: " + head.name,
@@ -69,7 +72,9 @@ export class FusefinderComponent implements OnInit {
       spAttack: this.calcStat(head.spAttack, body.spAttack, false),
       attack: this.calcStat(head.attack, body.attack, true),
       defense: this.calcStat(head.defense, body.defense, true),
-      speed: this.calcStat(head.speed, body.speed, true)
+      speed: this.calcStat(head.speed, body.speed, true),
+      head: head.name,
+      body: body.name
     }
   }
 
@@ -82,7 +87,7 @@ export class FusefinderComponent implements OnInit {
     }
   }
 
-  private getBST(target: pokemon): number {
+  getBST(target: pokemon): number {
     return target.HP + target.attack + target.defense + target.spAttack + target.spDefense + target.speed
   }
 }
