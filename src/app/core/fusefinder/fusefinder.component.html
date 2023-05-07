@@ -1,29 +1,46 @@
 <div id="page">
     <div id="container">
-        <p-card id="list">
-            <p-dropdown [virtualScroll]="true" [virtualScrollItemSize]="38" placeholder="Select a Pokemon"
-                [options]="pokedex" optionLabel="name" [(ngModel)]="selectedPokemon"
-                (onChange)="updateFusions()"></p-dropdown>
-            <p-virtualScroller [value]="fusions"  [style]="{'width': '400px'}" scrollHeight="200px" [itemSize]="38">
-                <ng-template pTemplate="fusion" let-fusion>
-                    <div (click)="selectFusion(fusion)" style="cursor: pointer">
-                        Head: {{fusion.head}}
-                        | Body: {{fusion.body}}
-                        | BST: {{getBST(fusion)}}
-                        | Type: {{fusion.type | typeDisplay}}
-                    </div>
-                </ng-template>
-            </p-virtualScroller>
-        </p-card>
-        <p-card div *ngIf="selectedFusion" id="fusion">
-            HP: {{selectedFusion.HP}} <br>
-            Atk: {{selectedFusion.attack}}<br>
-            Def: {{selectedFusion.defense}}<br>
-            Sp. Atk: {{selectedFusion.spAttack}}<br>
-            Sp. Def: {{selectedFusion.spDefense}}<br>
-            Speed: {{selectedFusion.speed}}<br>
-            BST: {{getBST(selectedFusion)}}<br>
-            Type: {{selectedFusion.type | typeDisplay}}
-        </p-card>
+        <div class="third">
+            <p-card id="filters">
+                Sort by stat:
+                <p-dropdown autoWidth="true" [style]="{'width':'300px'}" [virtualScroll]="true"
+                    [virtualScrollItemSize]="38" placeholder="Sort by?" [options]="sortOptions" optionLabel="name"
+                    [(ngModel)]="selectedSort" (onChange)="update()"></p-dropdown><br>
+                Filter by type:
+                <p-dropdown autoWidth="true" [style]="{'width':'300px'}" [virtualScroll]="true"
+                    [virtualScrollItemSize]="38" placeholder="Filter type by?" [options]="typeFilters" optionLabel="name"
+                    [(ngModel)]="selectedFilter" (onChange)="update()"></p-dropdown>
+            </p-card>
+        </div>
+        <div class="third">
+            <p-card id="list">
+                <p-dropdown autoWidth="true" [style]="{'width':'300px'}" [virtualScroll]="true"
+                    [virtualScrollItemSize]="38" placeholder="Select a Pokemon" [options]="pokedex" optionLabel="name"
+                    [(ngModel)]="selectedPokemon" (onChange)="update()"></p-dropdown>
+                <p-virtualScroller [value]="fusions" [style]="{'width': '600px'}" scrollHeight="500px" [itemSize]="38">
+                    <ng-template pTemplate="fusion" let-fusion>
+                        <div (click)="selectFusion(fusion)" style="cursor: pointer">
+                            Head: {{fusion.head}}
+                            | Body: {{fusion.body}}
+                            | BST: {{getBST(fusion)}}
+                            | Type: {{fusion.type | typeDisplay}}
+                        </div>
+                    </ng-template>
+                </p-virtualScroller>
+            </p-card>
+        </div>
+        <div class="third">
+            <p-card *ngIf="selectedFusion" id="fusion">
+                {{selectedFusion.name}} <br>
+                HP: {{selectedFusion.HP}} <br>
+                Atk: {{selectedFusion.attack}}<br>
+                Def: {{selectedFusion.defense}}<br>
+                Sp. Atk: {{selectedFusion.spAttack}}<br>
+                Sp. Def: {{selectedFusion.spDefense}}<br>
+                Speed: {{selectedFusion.speed}}<br>
+                BST: {{getBST(selectedFusion)}}<br>
+                Type: {{selectedFusion.type | typeDisplay}}
+            </p-card>
+        </div>
     </div>
 </div>

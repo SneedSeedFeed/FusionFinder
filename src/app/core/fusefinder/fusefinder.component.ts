@@ -10,29 +10,113 @@ import { fusedpokemon } from '../_interfaces/fusedpokemon';
   templateUrl: './fusefinder.component.html',
   styleUrls: ['./fusefinder.component.scss']
 })
-export class FusefinderComponent implements OnInit {
+export class FusefinderComponent {
 
+  //Manually compiled dictionary of every pokemon that has a special exception in which type it gives
+  readonly typeExceptions: { [id: number]: string } = {
+    1: "Grass",
+    2: "Grass",
+    3: "Grass",
+    6: "Fire",
+    74: "Rock",
+    75: "Rock",
+    76: "Rock",
+    92: "Ghost",
+    93: "Ghost",
+    94: "Ghost",
+    95: "Rock",
+    123: "Bug",
+    130: "Water",
+    144: "Ice",
+    145: "Electric",
+    146: "Fire",
+    149: "Dragon",
+    208: "Steel",
+    16: "Flying",
+    17: "Flying",
+    18: "Flying",
+    21: "Flying",
+    22: "Flying",
+    83: "Flying",
+    84: "Flying",
+    85: "Flying",
+    163: "Flying",
+    164: "Flying",
+    276: "Flying",
+    277: "Flying",
+    333: "Flying",
+    396: "Flying",
+    397: "Flying",
+    398: "Flying",
+    441: "Flying",
+    519: "Flying",
+    520: "Flying",
+    521: "Flying",
+    627: "Flying",
+    628: "Flying",
+    661: "Flying",
+    731: "Flying",
+    732: "Flying",
+    733: "Flying",
+    931: "Flying",
+  }
+
+  //Our list of pokemon in the game
   readonly pokedex: pokemon[] = []
+  selectedPokemon!: pokemon
 
+  //Our list of fusions for a given selection of pokemon
   fusions: fusedpokemon[] = []
+  selectedFusion!: fusedpokemon
 
-  selectedPokemon!:pokemon
+  //Array of our different sorts and their associated name
+  readonly sortOptions: { name: string, sort: { (a: fusedpokemon, b: fusedpokemon): number } }[] = [{ name: "None", sort: () => { return 0 } },
+  { name: "HP", sort: (a, b) => { return b.HP - a.HP } },
+  { name: "Atk", sort: (a, b) => { return b.attack - a.attack } },
+  { name: "Def", sort: (a, b) => { return b.defense - a.defense } },
+  { name: "Sp. Atk", sort: (a, b) => { return b.spAttack - a.spAttack } },
+  { name: "Sp. Def", sort: (a, b) => { return b.spDefense - a.spDefense } },
+  { name: "Speed", sort: (a, b) => { return b.speed - a.speed } },
+  { name: "BST", sort: (a, b) => { return this.getBST(b) - this.getBST(a) } }]
+  selectedSort = this.sortOptions[0]
 
-  selectedFusion!:fusedpokemon
+  //Array of our different type filters and their associated name
+  readonly typeFilters: { name: string, filter: { (val: fusedpokemon): boolean } }[] = [{ name: "None", filter: () => { return true } },
+  { name: "Normal", filter: (a) => { return a.type.includes("Normal") } },
+  { name: "Fighting", filter: (a) => { return a.type.includes("Fighting") } },
+  { name: "Flying", filter: (a) => { return a.type.includes("Flying") } },
+  { name: "Poison", filter: (a) => { return a.type.includes("Poison") } },
+  { name: "Ground", filter: (a) => { return a.type.includes("Ground") } },
+  { name: "Rock", filter: (a) => { return a.type.includes("Rock") } },
+  { name: "Bug", filter: (a) => { return a.type.includes("Bug") } },
+  { name: "Ghost", filter: (a) => { return a.type.includes("Ghost") } },
+  { name: "Steel", filter: (a) => { return a.type.includes("Steel") } },
+  { name: "Fire", filter: (a) => { return a.type.includes("Fire") } },
+  { name: "Water", filter: (a) => { return a.type.includes("Water") } },
+  { name: "Grass", filter: (a) => { return a.type.includes("Grass") } },
+  { name: "Electric", filter: (a) => { return a.type.includes("Electric") } },
+  { name: "Psychic", filter: (a) => { return a.type.includes("Psychic") } },
+  { name: "Ice", filter: (a) => { return a.type.includes("Ice") } },
+  { name: "Dragon", filter: (a) => { return a.type.includes("Dragon") } },
+  { name: "Dark", filter: (a) => { return a.type.includes("Dark") } },
+  { name: "Fairy", filter: (a) => { return a.type.includes("Fairy") } }]
+  selectedFilter = this.typeFilters[0]
 
-  constructor(){
+  //Load data from pokedex.json (has been manually editted to make typings up to date, stats may be slightly off)
+  constructor() {
     console.time("Init")
     let dexData: any[] = rawDex;
     dexData.forEach(value => {
       if (value.id && value.name && value.type && value.base && this.isInGame(value.id)) {
-        this.pokedex.push({ id: value.id, 
-          name: value.name.english, 
-          type: value.type, 
-          HP: value.base.HP, 
-          attack: value.base.Attack, 
-          defense: value.base.Defense, 
-          spAttack: value.base["Sp. Attack"], 
-          spDefense: value.base["Sp. Defense"], 
+        this.pokedex.push({
+          id: value.id,
+          name: value.name.english,
+          type: value.type,
+          HP: value.base.HP,
+          attack: value.base.Attack,
+          defense: value.base.Defense,
+          spAttack: value.base["Sp. Attack"],
+          spDefense: value.base["Sp. Defense"],
           speed: value.base.Speed,
         })
       }
@@ -40,11 +124,8 @@ export class FusefinderComponent implements OnInit {
     console.timeEnd("Init")
   }
 
-  ngOnInit(): void {
-
-  }
-
-  selectFusion(selected: fusedpokemon){
+  //When a user clicks a pokemon from the virtual scroller we select it and bring it up on the right hand side
+  selectFusion(selected: fusedpokemon) {
     this.selectedFusion = selected
   }
 
@@ -63,10 +144,14 @@ export class FusefinderComponent implements OnInit {
     return false;
   }
 
-  updateFusions(){
-    this.fusions = this.getAllFusions(this.selectedPokemon)
+  //Updates and filters/sorts the fusion list 
+  update() {
+    if (this.selectedPokemon) {
+      this.fusions = this.getAllFusions(this.selectedPokemon).filter(this.selectedFilter.filter).sort(this.selectedSort.sort)
+    }
   }
 
+  //Gets a list of all the fusions for a given pokemon, includes their self fusion twice because I can't be bothered to write one if statement
   private getAllFusions(toFuse: pokemon): fusedpokemon[] {
     let results: fusedpokemon[] = []
 
@@ -76,15 +161,15 @@ export class FusefinderComponent implements OnInit {
     this.pokedex.forEach(val => {
       results.push(this.getFusion(val, toFuse))
     })
-    results.sort((a,b) => this.getBST(b) - this.getBST(a))
     return results
   }
 
+  //Fuses two pokemon and calculates the results, no we don't calculate the name because I'm lazy
   private getFusion(body: pokemon, head: pokemon): fusedpokemon {
     return {
       id: 0,
-      name: "Body: " + body.name + " Head: " + head.name,
-      type: this.calcType(body,head),
+      name: "Body: " + body.name + " | Head: " + head.name,
+      type: this.calcType(body, head),
       HP: this.calcStat(head.HP, body.HP, false),
       spDefense: this.calcStat(head.spDefense, body.spDefense, false),
       spAttack: this.calcStat(head.spAttack, body.spAttack, false),
@@ -96,6 +181,7 @@ export class FusefinderComponent implements OnInit {
     }
   }
 
+  //Calculates a stat from two pokemon, switch whether it's body or head sided with the boolean
   private calcStat(headstat: number, bodystat: number, bodySided: boolean): number {
     if (bodySided) {
       return Math.floor(2 * (bodystat / 3) + (headstat / 3))
@@ -105,13 +191,28 @@ export class FusefinderComponent implements OnInit {
     }
   }
 
-  private calcType(body: pokemon, head: pokemon): string[]{
-    let returnArray :string [] = []
-    returnArray.push(head.type[0])
-    returnArray.push(body.type[0])
-    return returnArray
+  //Works out the type. 
+  private calcType(body: pokemon, head: pokemon): string[] {
+    //First we set it to the head's primary and the body's last type (secondary if there is one)
+    let bodyProvided = body.type[body.type.length - 1]
+    let headProvided = head.type[0]
+
+    //If the head and body have the same type, and the body has a second type available we use that as the secondary type instead
+    if (headProvided == bodyProvided && body.type.length == 2) {
+      bodyProvided = body.type[0]
+    }
+
+    //Apply the special exceptions for each pokemon
+    if (body.id in this.typeExceptions) {
+      bodyProvided = this.typeExceptions[body.id]
+    }
+    if (head.id in this.typeExceptions) {
+      headProvided = this.typeExceptions[head.id]
+    }
+    return [headProvided, bodyProvided]
   }
 
+  //Gets BST for a given pokemon (or fusion since it inherits from Pokemon)
   getBST(target: pokemon): number {
     return target.HP + target.attack + target.defense + target.spAttack + target.spDefense + target.speed
   }
