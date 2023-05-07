@@ -5,13 +5,10 @@
 #container{
     display:grid;
     justify-content: center;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: 30% 30% 30%;
 }
 .third{
     width: auto;
     height: auto;
     margin: 30px;
-}
-p-card{
-
 }

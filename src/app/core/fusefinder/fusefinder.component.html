@@ -17,14 +17,15 @@
                 <p-dropdown autoWidth="true" [style]="{'width':'300px'}" [virtualScroll]="true"
                     [virtualScrollItemSize]="38" placeholder="Select a Pokemon" [options]="pokedex" optionLabel="name"
                     [(ngModel)]="selectedPokemon" (onChange)="update()"></p-dropdown>
-                <p-virtualScroller [value]="fusions" [style]="{'width': '600px'}" scrollHeight="500px" [itemSize]="38">
+                <p-virtualScroller [value]="fusions" [style]="{'width': '100%'}" scrollHeight="500px" [itemSize]="38">
                     <ng-template pTemplate="fusion" let-fusion>
-                        <div (click)="selectFusion(fusion)" style="cursor: pointer">
+                        <div  (click)="selectFusion(fusion)" style="cursor: pointer">
                             Head: {{fusion.head}}
                             | Body: {{fusion.body}}
                             | BST: {{getBST(fusion)}}
                             | Type: {{fusion.type | typeDisplay}}
                         </div>
+                        <p-divider></p-divider>
                     </ng-template>
                 </p-virtualScroller>
             </p-card>

@@ -16,6 +16,7 @@ import {abilityDisplay} from './_pipes/abilityDisplay'
 import { CardModule } from 'primeng/card';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { DropdownModule } from 'primeng/dropdown';
+import { DividerModule } from 'primeng/divider';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { DropdownModule } from 'primeng/dropdown';
     CardModule,
     VirtualScrollerModule,
     DropdownModule,
-    FormsModule
+    FormsModule,
+    DividerModule
   ],
   exports: [PageContainerComponent]
 })
