@@ -14,11 +14,13 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { DropdownModule } from 'primeng/dropdown';
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { typeDisplay } from './_pipes/typeDisplay';
 
 @NgModule({
   declarations: [
     FusefinderComponent,
-    PageContainerComponent
+    PageContainerComponent,
+    typeDisplay
   ],
   imports: [
     BrowserModule,

@@ -1,16 +1,29 @@
 <div id="page">
-    <div >
-        <p-card id="ui">
-            <p-dropdown [virtualScroll]="true" [virtualScrollItemSize]="38" placeholder="Select a Pokemon" [options]="pokedex" optionLabel="name" [(ngModel)]="selectedPokemon" (onChange)="updateFusions()"></p-dropdown>
-            <p-virtualScroller [value]="fusions" [style]="{'width': '400px'}" scrollHeight="200px" [itemSize]="38">
+    <div id="container">
+        <p-card id="list">
+            <p-dropdown [virtualScroll]="true" [virtualScrollItemSize]="38" placeholder="Select a Pokemon"
+                [options]="pokedex" optionLabel="name" [(ngModel)]="selectedPokemon"
+                (onChange)="updateFusions()"></p-dropdown>
+            <p-virtualScroller [value]="fusions"  [style]="{'width': '400px'}" scrollHeight="200px" [itemSize]="38">
                 <ng-template pTemplate="fusion" let-fusion>
-                    <div>
+                    <div (click)="selectFusion(fusion)" style="cursor: pointer">
                         Head: {{fusion.head}}
                         | Body: {{fusion.body}}
-                        | BST: {{getBST(fusion)| number:'1.0-0'}}
+                        | BST: {{getBST(fusion)}}
+                        | Type: {{fusion.type | typeDisplay}}
                     </div>
                 </ng-template>
             </p-virtualScroller>
+        </p-card>
+        <p-card div *ngIf="selectedFusion" id="fusion">
+            HP: {{selectedFusion.HP}} <br>
+            Atk: {{selectedFusion.attack}}<br>
+            Def: {{selectedFusion.defense}}<br>
+            Sp. Atk: {{selectedFusion.spAttack}}<br>
+            Sp. Def: {{selectedFusion.spDefense}}<br>
+            Speed: {{selectedFusion.speed}}<br>
+            BST: {{getBST(selectedFusion)}}<br>
+            Type: {{selectedFusion.type | typeDisplay}}
         </p-card>
     </div>
 </div>

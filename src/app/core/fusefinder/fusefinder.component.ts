@@ -12,21 +12,40 @@ import { fusedpokemon } from '../_interfaces/fusedpokemon';
 })
 export class FusefinderComponent implements OnInit {
 
-  pokedex: pokemon[] = []
+  readonly pokedex: pokemon[] = []
 
   fusions: fusedpokemon[] = []
 
   selectedPokemon!:pokemon
 
-  ngOnInit(): void {
+  selectedFusion!:fusedpokemon
+
+  constructor(){
     console.time("Init")
     let dexData: any[] = rawDex;
     dexData.forEach(value => {
       if (value.id && value.name && value.type && value.base && this.isInGame(value.id)) {
-        this.pokedex.push({ id: value.id, name: value.name.english, type: value.type, HP: value.base.HP, attack: value.base.Attack, defense: value.base.Defense, spAttack: value.base["Sp. Attack"], spDefense: value.base["Sp. Defense"], speed: value.base.Speed })
+        this.pokedex.push({ id: value.id, 
+          name: value.name.english, 
+          type: value.type, 
+          HP: value.base.HP, 
+          attack: value.base.Attack, 
+          defense: value.base.Defense, 
+          spAttack: value.base["Sp. Attack"], 
+          spDefense: value.base["Sp. Defense"], 
+          speed: value.base.Speed,
+        })
       }
     })
     console.timeEnd("Init")
+  }
+
+  ngOnInit(): void {
+
+  }
+
+  selectFusion(selected: fusedpokemon){
+    this.selectedFusion = selected
   }
 
   private isInGame(id: number): Boolean {
@@ -65,7 +84,7 @@ export class FusefinderComponent implements OnInit {
     return {
       id: 0,
       name: "Body: " + body.name + " Head: " + head.name,
-      type: ["Normal"],
+      type: this.calcType(body,head),
       HP: this.calcStat(head.HP, body.HP, false),
       spDefense: this.calcStat(head.spDefense, body.spDefense, false),
       spAttack: this.calcStat(head.spAttack, body.spAttack, false),
@@ -73,17 +92,24 @@ export class FusefinderComponent implements OnInit {
       defense: this.calcStat(head.defense, body.defense, true),
       speed: this.calcStat(head.speed, body.speed, true),
       head: head.name,
-      body: body.name
+      body: body.name,
     }
   }
 
   private calcStat(headstat: number, bodystat: number, bodySided: boolean): number {
     if (bodySided) {
-      return 2 * (bodystat / 3) + (headstat / 3)
+      return Math.floor(2 * (bodystat / 3) + (headstat / 3))
     }
     else {
-      return (bodystat / 3) + 2 * (headstat / 3)
+      return Math.floor((bodystat / 3) + 2 * (headstat / 3))
     }
+  }
+
+  private calcType(body: pokemon, head: pokemon): string[]{
+    let returnArray :string [] = []
+    returnArray.push(head.type[0])
+    returnArray.push(body.type[0])
+    return returnArray
   }
 
   getBST(target: pokemon): number {
