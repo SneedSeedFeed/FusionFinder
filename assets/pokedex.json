@@ -2968,7 +2968,7 @@
       "chinese": "小磁怪",
       "french": "Magnéti"
     },
-    "type": ["Electric", "Steel"],
+    "type": ["Steel", "Electric"],
     "base": {
       "HP": 25,
       "Attack": 35,
@@ -3005,7 +3005,7 @@
       "chinese": "三合一磁怪",
       "french": "Magnéton"
     },
-    "type": ["Electric", "Steel"],
+    "type": ["Steel", "Electric"],
     "base": {
       "HP": 50,
       "Attack": 60,
@@ -3193,7 +3193,7 @@
       "chinese": "白海狮",
       "french": "Lamantine"
     },
-    "type": ["Water", "Ice"],
+    "type": ["Ice", "Water"],
     "base": {
       "HP": 90,
       "Attack": 70,
@@ -5076,7 +5076,7 @@
       "chinese": "菊石兽",
       "french": "Amonita"
     },
-    "type": ["Rock", "Water"],
+    "type": ["Water", "Rock"],
     "base": {
       "HP": 35,
       "Attack": 40,
@@ -5113,7 +5113,7 @@
       "chinese": "多刺菊石兽",
       "french": "Amonistar"
     },
-    "type": ["Rock", "Water"],
+    "type": ["Water", "Rock"],
     "base": {
       "HP": 70,
       "Attack": 60,
@@ -7781,7 +7781,7 @@
       "chinese": "巨钳螳螂",
       "french": "Cizayox"
     },
-    "type": ["Bug", "Steel"],
+    "type": ["Steel", "Bug"],
     "base": {
       "HP": 70,
       "Attack": 130,
@@ -9221,7 +9221,7 @@
       "chinese": "时拉比",
       "french": "Celebi"
     },
-    "type": ["Psychic", "Grass"],
+    "type": ["Grass", "Psychic"],
     "base": {
       "HP": 100,
       "Attack": 100,
@@ -14448,7 +14448,7 @@
       "chinese": "帝王拿波",
       "french": "Pingoléon"
     },
-    "type": ["Water", "Steel"],
+    "type": ["Steel", "Water"],
     "base": {
       "HP": 84,
       "Attack": 86,
@@ -16159,7 +16159,7 @@
       "chinese": "花岩怪",
       "french": "Spiritomb"
     },
-    "type": ["Ghost", "Dark"],
+    "type": ["Dark", "Ghost"],
     "base": {
       "HP": 50,
       "Attack": 92,
@@ -16886,7 +16886,7 @@
       "chinese": "自爆磁怪",
       "french": "Magnézone"
     },
-    "type": ["Electric", "Steel"],
+    "type": ["Steel", "Electric"],
     "base": {
       "HP": 70,
       "Attack": 70,
@@ -21781,7 +21781,7 @@
       "chinese": "种子铁球",
       "french": "Grindur"
     },
-    "type": ["Grass", "Steel"],
+    "type": ["Steel", "Grass"],
     "base": {
       "HP": 44,
       "Attack": 50,
