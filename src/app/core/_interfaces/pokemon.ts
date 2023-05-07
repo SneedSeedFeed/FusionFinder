@@ -1,3 +1,5 @@
+import { ability } from "./ability";
+
 export interface pokemon{
     id: number;
     name: string;
@@ -8,4 +10,5 @@ export interface pokemon{
     spAttack: number;
     spDefense: number;
     speed: number;
+    abilities: ability[]
 }

@@ -10,6 +10,7 @@ import { FusefinderComponent } from './fusefinder/fusefinder.component';
 import { CoreRoutingModule } from './core-routing.module';
 import { PageContainerComponent } from './page-container/page-container.component';
 import { typeDisplay } from './_pipes/typeDisplay';
+import {abilityDisplay} from './_pipes/abilityDisplay'
 
 //PrimeNG Imports
 import { CardModule } from 'primeng/card';
@@ -21,7 +22,8 @@ import { DropdownModule } from 'primeng/dropdown';
   declarations: [
     FusefinderComponent,
     PageContainerComponent,
-    typeDisplay
+    typeDisplay,
+    abilityDisplay
   ],
   imports: [
     BrowserModule,

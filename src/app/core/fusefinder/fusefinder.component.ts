@@ -4,6 +4,7 @@ import rawDex from '../../../assets/pokedex.json'
 
 import { pokemon } from '../_interfaces/pokemon';
 import { fusedpokemon } from '../_interfaces/fusedpokemon';
+import { ability } from '../_interfaces/ability';
 
 @Component({
   selector: 'app-fusefinder',
@@ -118,10 +119,20 @@ export class FusefinderComponent {
           spAttack: value.base["Sp. Attack"],
           spDefense: value.base["Sp. Defense"],
           speed: value.base.Speed,
+          abilities: this.convertRawAbilities(value.profile.ability),
         })
       }
     })
     console.timeEnd("Init")
+  }
+
+  //Pokedex stores abilities in a way I dislike so I convert it to our ability interface for our pokemon
+  private convertRawAbilities(val: string[][]): ability[]{
+    let abilityList: ability[] = []
+    val.forEach(abilityPair =>{
+      abilityList.push({name: abilityPair[0], isHidden: Boolean(JSON.parse(abilityPair[1]))})
+    })
+    return abilityList
   }
 
   //When a user clicks a pokemon from the virtual scroller we select it and bring it up on the right hand side
@@ -178,6 +189,7 @@ export class FusefinderComponent {
       speed: this.calcStat(head.speed, body.speed, true),
       head: head.name,
       body: body.name,
+      abilities: head.abilities.concat(body.abilities)
     }
   }
 
