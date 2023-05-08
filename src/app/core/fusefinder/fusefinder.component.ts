@@ -103,6 +103,9 @@ export class FusefinderComponent {
   { name: "Fairy", filter: (a) => { return a.type.includes("Fairy") } }]
   selectedFilter = this.typeFilters[0]
 
+  abilitySearch: string = "";
+  abilitySearchFunc: { (val: pokemon): boolean } = () => {return true};
+
   //Load data from pokedex.json (has been manually editted to make typings up to date, stats may be slightly off)
   constructor() {
     console.time("Init")
@@ -127,10 +130,10 @@ export class FusefinderComponent {
   }
 
   //Pokedex stores abilities in a way I dislike so I convert it to our ability interface for our pokemon
-  private convertRawAbilities(val: string[][]): ability[]{
+  private convertRawAbilities(val: string[][]): ability[] {
     let abilityList: ability[] = []
-    val.forEach(abilityPair =>{
-      abilityList.push({name: abilityPair[0], isHidden: Boolean(JSON.parse(abilityPair[1]))})
+    val.forEach(abilityPair => {
+      abilityList.push({ name: abilityPair[0], isHidden: Boolean(JSON.parse(abilityPair[1])) })
     })
     return abilityList
   }
@@ -140,6 +143,7 @@ export class FusefinderComponent {
     this.selectedFusion = selected
   }
 
+  //Checks a given pokemon from our raw data is actually in the game
   private isInGame(id: number): Boolean {
     let otherValids: number[] = [298, 360, 424, 429, 430, 438, 439, 440, 446, 458, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 280, 281, 282, 292, 352, 374, 375, 376, 399, 442, 448, 443, 444, 445, 303, 345, 346, 347, 348, 408, 409, 410, 411,
       289, 359, 355, 356, 321, 493, 387, 388, 389, 390, 391, 392, 393, 394, 395, 299, 679, 680, 681, 624, 625, 405, 306, 330, 350, 373, 601, 571, 700, 382, 383, 384, 483, 484, 487, 486, 491, 649, 643, 644, 646, 407, 426, 428, 286, 291, 354, 479, 579, 547, 553, 563, 596, 598, 607, 608, 609, 612,
@@ -155,12 +159,30 @@ export class FusefinderComponent {
     return false;
   }
 
+  keyUp(){
+        //Function called in filter can't access variables in the component. So every time the user inputs a key we create a new function. Cludgy but fuck it it works
+        this.abilitySearchFunc = (val) => {
+          if(this.abilitySearch.trim() == ""){return true}
+          let hasAbility: boolean = false;
+          val.abilities.forEach(ability => {
+            if (ability.name.toUpperCase().includes(this.abilitySearch.toUpperCase())) {
+              hasAbility = true
+            }
+          })
+          return hasAbility
+        }
+
+        this.update()
+  }
+
   //Updates and filters/sorts the fusion list 
   update() {
     if (this.selectedPokemon) {
-      this.fusions = this.getAllFusions(this.selectedPokemon).filter(this.selectedFilter.filter).sort(this.selectedSort.sort)
+      this.fusions = this.getAllFusions(this.selectedPokemon).filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).sort(this.selectedSort.sort)
     }
   }
+
+
 
   //Gets a list of all the fusions for a given pokemon, includes their self fusion twice because I can't be bothered to write one if statement
   private getAllFusions(toFuse: pokemon): fusedpokemon[] {

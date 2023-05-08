@@ -1,5 +1,5 @@
 //Angular Imports
-import { NgModule } from '@angular/core';
+import { Input, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from "@angular/platform-browser";
@@ -17,6 +17,7 @@ import { CardModule } from 'primeng/card';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { DropdownModule } from 'primeng/dropdown';
 import { DividerModule } from 'primeng/divider';
+import { InputText, InputTextModule } from 'primeng/inputtext'
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { DividerModule } from 'primeng/divider';
   ],
   imports: [
     BrowserModule,
+    InputTextModule,
     BrowserAnimationsModule,
     CommonModule,
     CoreRoutingModule,

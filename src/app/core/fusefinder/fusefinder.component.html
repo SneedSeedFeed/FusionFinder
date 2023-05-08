@@ -9,12 +9,14 @@
                 Filter by type:
                 <p-dropdown autoWidth="true" [style]="{'width':'300px'}" [virtualScroll]="true"
                     [virtualScrollItemSize]="38" placeholder="Filter type by?" [options]="typeFilters" optionLabel="name"
-                    [(ngModel)]="selectedFilter" (onChange)="update()"></p-dropdown>
+                    [(ngModel)]="selectedFilter" (onChange)="update()"></p-dropdown><br>
+                Filter by ability:
+                <input type="text" pInputText (keyup)="keyUp()" [(ngModel)]="abilitySearch"/>
             </p-card>
         </div>
         <div class="third">
             <p-card id="list">
-                <p-dropdown autoWidth="true" [style]="{'width':'300px'}" [virtualScroll]="true"
+                <p-dropdown autoWidth="true" [filter]="true" [style]="{'width':'300px'}" [virtualScroll]="true"
                     [virtualScrollItemSize]="38" placeholder="Select a Pokemon" [options]="pokedex" optionLabel="name"
                     [(ngModel)]="selectedPokemon" (onChange)="update()"></p-dropdown>
                 <p-virtualScroller [value]="fusions" [style]="{'width': '100%'}" scrollHeight="500px" [itemSize]="38">
