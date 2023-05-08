@@ -13,6 +13,15 @@ import { ability } from '../_interfaces/ability';
 })
 export class FusefinderComponent {
 
+  readonly legendaryIDs: number[] = [144, 145, 146, 150, 151, 249, 250, 251, 243, 244, 245, 380, 381, 382, 383, 384, 385, 386, 483, 484, 486, 487, 491, 493, 643, 644, 646, 649]
+  legendaryFilters: { name: string, filter: { (val: fusedpokemon): boolean } }[] = [{ name: "Include legendary/mythic pokemon", filter: () => { return true } }, {
+    name: "No legendary/mythic", filter: (a) => {
+      if (this.legendaryIDs.includes(a.headID) || this.legendaryIDs.includes(a.bodyID)) { return false }
+      return true
+    }
+  }]
+  selectedLegendaryFilter = this.legendaryFilters[0].filter
+
   //Manually compiled dictionary of every pokemon that has a special exception in which type it gives
   readonly typeExceptions: { [id: number]: string } = {
     1: "Grass",
@@ -104,7 +113,7 @@ export class FusefinderComponent {
   selectedFilter = this.typeFilters[0]
 
   abilitySearch: string = "";
-  abilitySearchFunc: { (val: pokemon): boolean } = () => {return true};
+  abilitySearchFunc: { (val: pokemon): boolean } = () => { return true };
 
   //Load data from pokedex.json (has been manually editted to make typings up to date, stats may be slightly off)
   constructor() {
@@ -159,26 +168,26 @@ export class FusefinderComponent {
     return false;
   }
 
-  keyUp(){
-        //Function called in filter can't access variables in the component. So every time the user inputs a key we create a new function. Cludgy but fuck it it works
-        this.abilitySearchFunc = (val) => {
-          if(this.abilitySearch.trim() == ""){return true}
-          let hasAbility: boolean = false;
-          val.abilities.forEach(ability => {
-            if (ability.name.toUpperCase().includes(this.abilitySearch.toUpperCase())) {
-              hasAbility = true
-            }
-          })
-          return hasAbility
+  keyUp() {
+    //Function called in filter can't access variables in the component. So every time the user inputs a key we create a new function. Cludgy but fuck it it works
+    this.abilitySearchFunc = (val) => {
+      if (this.abilitySearch.trim() == "") { return true }
+      let hasAbility: boolean = false;
+      val.abilities.forEach(ability => {
+        if (ability.name.toUpperCase().includes(this.abilitySearch.toUpperCase())) {
+          hasAbility = true
         }
+      })
+      return hasAbility
+    }
 
-        this.update()
+    this.update()
   }
 
   //Updates and filters/sorts the fusion list 
   update() {
     if (this.selectedPokemon) {
-      this.fusions = this.getAllFusions(this.selectedPokemon).filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).sort(this.selectedSort.sort)
+      this.fusions = this.getAllFusions(this.selectedPokemon).filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).sort(this.selectedSort.sort)
     }
   }
 
@@ -210,7 +219,9 @@ export class FusefinderComponent {
       defense: this.calcStat(head.defense, body.defense, true),
       speed: this.calcStat(head.speed, body.speed, true),
       head: head.name,
+      headID: head.id,
       body: body.name,
+      bodyID: body.id,
       abilities: head.abilities.concat(body.abilities)
     }
   }
