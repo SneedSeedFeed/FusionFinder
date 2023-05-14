@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 //@ts-ignore
 import rawDex from '../../../assets/pokedex.json'
 
@@ -100,7 +100,8 @@ export class FusefinderComponent {
   selectedPokemon!: pokemon
 
   //Our list of fusions for a given selection of pokemon
-  fusions: fusedpokemon[] = []
+  allFusions: fusedpokemon[] = []
+  filteredfusions: fusedpokemon[] = []
   selectedFusion!: fusedpokemon
 
   //Array of our different sorts and their associated name
@@ -202,14 +203,22 @@ export class FusefinderComponent {
     this.update()
   }
 
-  //Updates and filters/sorts the fusion list 
+  //Updates fusion list with new pokemon 
   update() {
     if (this.selectedPokemon) {
-      this.fusions = this.getAllFusions(this.selectedPokemon).filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).sort(this.selectedSort.sort)
+      this.allFusions = this.getAllFusions(this.selectedPokemon)
+      this.updateFilters()
     }
   }
 
-
+  //Updates the filters
+  updateFilters() {
+    if (this.selectedPokemon) {
+      console.time("Filtered in")
+      this.filteredfusions = this.allFusions.filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).sort(this.selectedSort.sort)
+      console.timeEnd("Filtered in")
+    }
+  }
 
   //Gets a list of all the fusions for a given pokemon, includes their self fusion twice because I can't be bothered to write one if statement
   private getAllFusions(toFuse: pokemon): fusedpokemon[] {
@@ -283,7 +292,6 @@ export class FusefinderComponent {
 
   private getImgLoc(headID: number, bodyID: number): string | null {
     let address = "https://raw.githubusercontent.com/SneedSeedFeed/FusionFinderAssets/main/CustomBattlers/" + headID + "." + bodyID + ".png"
-
     return address
   }
 
