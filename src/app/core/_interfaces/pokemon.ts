@@ -10,5 +10,6 @@ export interface pokemon{
     spAttack: number;
     spDefense: number;
     speed: number;
-    abilities: ability[]
+    abilities: ability[];
+    newdexID: number;
 }

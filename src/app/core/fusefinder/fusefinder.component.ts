@@ -12,6 +12,11 @@ import { ability } from '../_interfaces/ability';
   styleUrls: ['./fusefinder.component.scss']
 })
 export class FusefinderComponent {
+  readonly IDList: number[] = [298, 360, 424, 429, 430, 438, 439, 440, 446, 458, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 280, 281, 282, 292, 352, 374, 375, 376, 399, 442, 448, 443, 444, 445, 303, 345, 346, 347, 348, 408, 409, 410, 411,
+    289, 359, 355, 356, 321, 493, 387, 388, 389, 390, 391, 392, 393, 394, 395, 299, 679, 680, 681, 624, 625, 405, 306, 330, 350, 373, 601, 571, 700, 382, 383, 384, 483, 484, 487, 486, 491, 649, 643, 644, 646, 407, 426, 428, 286, 291, 354, 479, 579, 547, 553, 563, 596, 598, 607, 608, 609, 612,
+    623, 771, 707, 663, 778, 637, 633, 634, 635, 380, 381, 385, 386, 290, 400, 447, 287, 288, 320, 403, 404, 304, 305, 328, 329, 349, 371, 372, 599, 600, 570, 406, 315, 425, 427, 285, 353, 577, 578, 546, 551, 552, 562, 595, 597, 610, 611, 622, 661, 662, 636, 618]
+
+
 
   readonly legendaryIDs: number[] = [144, 145, 146, 150, 151, 249, 250, 251, 243, 244, 245, 380, 381, 382, 383, 384, 385, 386, 483, 484, 486, 487, 491, 493, 643, 644, 646, 649]
   legendaryFilters: { name: string, filter: { (val: fusedpokemon): boolean } }[] = [{ name: "Include legendary/mythic pokemon", filter: () => { return true } }, {
@@ -132,6 +137,7 @@ export class FusefinderComponent {
           spDefense: value.base["Sp. Defense"],
           speed: value.base.Speed,
           abilities: this.convertRawAbilities(value.profile.ability),
+          newdexID: this.getNewDexID(value.id)
         })
       }
     })
@@ -154,14 +160,7 @@ export class FusefinderComponent {
 
   //Checks a given pokemon from our raw data is actually in the game
   private isInGame(id: number): Boolean {
-    let otherValids: number[] = [298, 360, 424, 429, 430, 438, 439, 440, 446, 458, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 280, 281, 282, 292, 352, 374, 375, 376, 399, 442, 448, 443, 444, 445, 303, 345, 346, 347, 348, 408, 409, 410, 411,
-      289, 359, 355, 356, 321, 493, 387, 388, 389, 390, 391, 392, 393, 394, 395, 299, 679, 680, 681, 624, 625, 405, 306, 330, 350, 373, 601, 571, 700, 382, 383, 384, 483, 484, 487, 486, 491, 649, 643, 644, 646, 407, 426, 428, 286, 291, 354, 479, 579, 547, 553, 563, 596, 598, 607, 608, 609, 612,
-      623, 771, 707, 663, 778, 637, 633, 634, 635, 380, 381, 385, 386, 290, 400, 447, 287, 288, 320, 403, 404, 304, 305, 328, 329, 349, 371, 372, 599, 600, 570, 406, 315, 425, 427, 285, 353, 577, 578, 546, 551, 552, 562, 595, 597, 610, 611, 622, 661, 662, 636, 618]
-
-    if (id < 261) { return true }
-
-    if (otherValids.includes(id)) {
-
+    if (id < 261 ||this.IDList.includes(id)) {
       return true
     }
 
@@ -195,6 +194,7 @@ export class FusefinderComponent {
 
   //Gets a list of all the fusions for a given pokemon, includes their self fusion twice because I can't be bothered to write one if statement
   private getAllFusions(toFuse: pokemon): fusedpokemon[] {
+    console.time("Fusions Generated")
     let results: fusedpokemon[] = []
 
     this.pokedex.forEach(val => {
@@ -203,6 +203,7 @@ export class FusefinderComponent {
     this.pokedex.forEach(val => {
       results.push(this.getFusion(val, toFuse))
     })
+    console.timeEnd("Fusions Generated")
     return results
   }
 
@@ -220,9 +221,13 @@ export class FusefinderComponent {
       speed: this.calcStat(head.speed, body.speed, true),
       head: head.name,
       headID: head.id,
+      headGameID: head.newdexID,
+      bodyGameID: body.newdexID,
       body: body.name,
       bodyID: body.id,
-      abilities: head.abilities.concat(body.abilities)
+      abilities: head.abilities.concat(body.abilities),
+      newdexID: 0,
+      imgName: "https://raw.githubusercontent.com/SneedSeedFeed/FusionFinder/main/src/assets/CustomBattlers/" +head.id + "." + body.id + ".png"
     }
   }
 
@@ -260,5 +265,17 @@ export class FusefinderComponent {
   //Gets BST for a given pokemon (or fusion since it inherits from Pokemon)
   getBST(target: pokemon): number {
     return target.HP + target.attack + target.defense + target.spAttack + target.spDefense + target.speed
+  }
+
+  private getNewDexID(natDexID: number): number{
+    if(natDexID <= 251){
+      return natDexID
+    }
+    let indexOf = this.IDList.indexOf(natDexID)
+    if(indexOf != -1){
+      return indexOf + 261
+    }
+
+    return natDexID
   }
 }

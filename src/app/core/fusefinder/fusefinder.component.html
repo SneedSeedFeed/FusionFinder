@@ -39,6 +39,7 @@
         </div>
         <div class="third">
             <p-card *ngIf="selectedFusion" id="fusion">
+                <img [src]="selectedFusion.imgName"> <br>
                 {{selectedFusion.name}} <br>
                 Type: {{selectedFusion.type | typeDisplay}}<br>
                 HP: {{selectedFusion.HP}} <br>
@@ -51,7 +52,6 @@
                 Abilities: {{selectedFusion.abilities | abilityDisplay}}<br><br>
 
                 Hidden abilities are denoted with brackets
-
             </p-card>
         </div>
     </div>
