@@ -12,9 +12,27 @@ import { ability } from '../_interfaces/ability';
   styleUrls: ['./fusefinder.component.scss']
 })
 export class FusefinderComponent {
-  readonly IDList: number[] = [298, 360, 424, 429, 430, 438, 439, 440, 446, 458, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 280, 281, 282, 292, 352, 374, 375, 376, 399, 442, 448, 443, 444, 445, 303, 345, 346, 347, 348, 408, 409, 410, 411,
-    289, 359, 355, 356, 321, 493, 387, 388, 389, 390, 391, 392, 393, 394, 395, 299, 679, 680, 681, 624, 625, 405, 306, 330, 350, 373, 601, 571, 700, 382, 383, 384, 483, 484, 487, 486, 491, 649, 643, 644, 646, 407, 426, 428, 286, 291, 354, 479, 579, 547, 553, 563, 596, 598, 607, 608, 609, 612,
-    623, 771, 707, 663, 778, 637, 633, 634, 635, 380, 381, 385, 386, 290, 400, 447, 287, 288, 320, 403, 404, 304, 305, 328, 329, 349, 371, 372, 599, 600, 570, 406, 315, 425, 427, 285, 353, 577, 578, 546, 551, 552, 562, 595, 597, 610, 611, 622, 661, 662, 636, 618]
+  //For non gen 1-2, this is a dictionary/map of natdex to infinite fusion dex numbers
+  readonly IDList: { [natdex: number]: number } = {
+    298: 252, 360: 253, 424: 254, 429: 255, 430: 256, 438: 257, 439: 258, 440: 259,
+    446: 260, 458: 261, 461: 262, 462: 263, 463: 264, 464: 265, 465: 266, 466: 267, 467: 269, 468: 269,
+    469: 270, 470: 271, 471: 272, 472: 273, 473: 274, 474: 275, 252: 276, 253: 277, 254: 278, 255: 279,
+    256: 280, 257: 281, 258: 282, 259: 283, 260: 284, 280: 285, 281: 286, 282: 287, 475: 288, 292: 289,
+    352: 290, 374: 291, 375: 292, 376: 293, 399: 294, 442: 295, 448: 296, 443: 297, 444: 298, 445: 299,
+    303: 300, 345: 301, 346: 302, 347: 303, 348: 304, 408: 305, 409: 306, 410: 307, 411: 308, 289: 309,
+    359: 310, 355: 311, 356: 312, 477: 313, 321: 314, 493: 315, 387: 316, 388: 317, 389: 318, 390: 319,
+    391: 320, 392: 321, 393: 322, 394: 323, 395: 324, 299: 325, 476: 326, 679: 327, 680: 328, 681: 329,
+    624: 330, 625: 331, 405: 332, 306: 333, 330: 334, 350: 335, 373: 336, 601: 337, 571: 338, 700: 339,
+    382: 340, 383: 341, 384: 342, 483: 343, 484: 344, 487: 345, 486: 346, 491: 347, 649: 348, 643: 349,
+    644: 350, 646: 351, 407: 352, 426: 353, 428: 354, 286: 355, 291: 356, 354: 357, 479: 358, 579: 359,
+    547: 360, 553: 361, 563: 362, 596: 363, 598: 364, 607: 365, 608: 366, 609: 367, 612: 368, 623: 369,
+    771: 370, 707: 371, 663: 372, 778: 373, 637: 374, 633: 375, 634: 376, 635: 377, 380: 378, 381: 379,
+    385: 380, 386: 381, 290: 382, 400: 383, 447: 384, 287: 385, 288: 386, 320: 387, 403: 388, 404: 389,
+    304: 390, 305: 391, 328: 392, 329: 393, 349: 394, 371: 395, 372: 396, 599: 397, 600: 398, 570: 399,
+    406: 400, 315: 401, 425: 402, 427: 403, 285: 404, 353: 405, 577: 406, 578: 407, 546: 408, 551: 409,
+    552: 410, 562: 411, 595: 412, 597: 413, 610: 414, 611: 415, 622: 416, 661: 417, 662: 418, 636: 419,
+    618: 420
+  }
 
 
 
@@ -28,6 +46,7 @@ export class FusefinderComponent {
   selectedLegendaryFilter = this.legendaryFilters[0].filter
 
   //Manually compiled dictionary of every pokemon that has a special exception in which type it gives
+  //These IDs are the NATDEX ID, NOT INFINITE FUSION DEX
   readonly typeExceptions: { [id: number]: string } = {
     1: "Grass",
     2: "Grass",
@@ -160,7 +179,7 @@ export class FusefinderComponent {
 
   //Checks a given pokemon from our raw data is actually in the game
   private isInGame(id: number): Boolean {
-    if (id < 261 ||this.IDList.includes(id)) {
+    if (id < 252 || this.IDList[id]) {
       return true
     }
 
@@ -227,7 +246,7 @@ export class FusefinderComponent {
       bodyID: body.id,
       abilities: head.abilities.concat(body.abilities),
       newdexID: 0,
-      imgName: "https://raw.githubusercontent.com/SneedSeedFeed/FusionFinder/main/src/assets/CustomBattlers/" +head.id + "." + body.id + ".png"
+      imgName: this.getImgLoc(head.newdexID, body.newdexID)
     }
   }
 
@@ -262,18 +281,23 @@ export class FusefinderComponent {
     return [headProvided, bodyProvided]
   }
 
+  private getImgLoc(headID: number, bodyID: number): string | null {
+    let address = "https://raw.githubusercontent.com/SneedSeedFeed/FusionFinderAssets/main/CustomBattlers/" + headID + "." + bodyID + ".png"
+
+    return address
+  }
+
   //Gets BST for a given pokemon (or fusion since it inherits from Pokemon)
   getBST(target: pokemon): number {
     return target.HP + target.attack + target.defense + target.spAttack + target.spDefense + target.speed
   }
 
-  private getNewDexID(natDexID: number): number{
-    if(natDexID <= 251){
+  private getNewDexID(natDexID: number): number {
+    if (natDexID <= 251) {
       return natDexID
     }
-    let indexOf = this.IDList.indexOf(natDexID)
-    if(indexOf != -1){
-      return indexOf + 261
+    if (this.IDList[natDexID]) {
+      return this.IDList[natDexID]
     }
 
     return natDexID

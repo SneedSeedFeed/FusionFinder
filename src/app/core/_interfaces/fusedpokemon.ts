@@ -7,5 +7,5 @@ export interface fusedpokemon extends pokemon{
     headID: number;
     headGameID: number;
     bodyGameID: number;
-    imgName: string;
+    imgName: string | null;
 }
