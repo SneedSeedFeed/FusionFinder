@@ -62,24 +62,24 @@ export class FusefinderComponent {
 
   //Array of our different type filters and their associated name
   readonly typeFilters: { name: string, filter: { (val: fusedpokemon): boolean } }[] = [{ name: "None", filter: () => { return true } },
-  { name: "Normal", filter: (a) => { return a.type.includes("Normal") } },
-  { name: "Fighting", filter: (a) => { return a.type.includes("Fighting") } },
-  { name: "Flying", filter: (a) => { return a.type.includes("Flying") } },
-  { name: "Poison", filter: (a) => { return a.type.includes("Poison") } },
-  { name: "Ground", filter: (a) => { return a.type.includes("Ground") } },
-  { name: "Rock", filter: (a) => { return a.type.includes("Rock") } },
-  { name: "Bug", filter: (a) => { return a.type.includes("Bug") } },
-  { name: "Ghost", filter: (a) => { return a.type.includes("Ghost") } },
-  { name: "Steel", filter: (a) => { return a.type.includes("Steel") } },
-  { name: "Fire", filter: (a) => { return a.type.includes("Fire") } },
-  { name: "Water", filter: (a) => { return a.type.includes("Water") } },
-  { name: "Grass", filter: (a) => { return a.type.includes("Grass") } },
-  { name: "Electric", filter: (a) => { return a.type.includes("Electric") } },
-  { name: "Psychic", filter: (a) => { return a.type.includes("Psychic") } },
-  { name: "Ice", filter: (a) => { return a.type.includes("Ice") } },
-  { name: "Dragon", filter: (a) => { return a.type.includes("Dragon") } },
-  { name: "Dark", filter: (a) => { return a.type.includes("Dark") } },
-  { name: "Fairy", filter: (a) => { return a.type.includes("Fairy") } }]
+  { name: "Normal", filter: (a) => { return a.type.includes("normal") } },
+  { name: "Fighting", filter: (a) => { return a.type.includes("fighting") } },
+  { name: "Flying", filter: (a) => { return a.type.includes("flying") } },
+  { name: "Poison", filter: (a) => { return a.type.includes("poison") } },
+  { name: "Ground", filter: (a) => { return a.type.includes("ground") } },
+  { name: "Rock", filter: (a) => { return a.type.includes("rock") } },
+  { name: "Bug", filter: (a) => { return a.type.includes("bug") } },
+  { name: "Ghost", filter: (a) => { return a.type.includes("ghost") } },
+  { name: "Steel", filter: (a) => { return a.type.includes("steel") } },
+  { name: "Fire", filter: (a) => { return a.type.includes("fire") } },
+  { name: "Water", filter: (a) => { return a.type.includes("water") } },
+  { name: "Grass", filter: (a) => { return a.type.includes("grass") } },
+  { name: "Electric", filter: (a) => { return a.type.includes("electric") } },
+  { name: "Psychic", filter: (a) => { return a.type.includes("psychic") } },
+  { name: "Ice", filter: (a) => { return a.type.includes("ice") } },
+  { name: "Dragon", filter: (a) => { return a.type.includes("dragon") } },
+  { name: "Dark", filter: (a) => { return a.type.includes("dark") } },
+  { name: "Fairy", filter: (a) => { return a.type.includes("fairy") } }]
   selectedFilter = this.typeFilters[0]
 
   abilitySearch: string = "";
