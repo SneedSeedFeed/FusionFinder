@@ -1,23 +1,52 @@
-#page{
-    height:100%;
-    width:100%
+#page {
+    height: 100%;
+    width: 100%
 }
-#container{
-    display:grid;
+
+#container {
+    display: grid;
     justify-content: center;
     grid-template-columns: 30% 30% 30%;
 }
-.third{
+
+.third {
     width: auto;
     height: auto;
     margin: 30px;
 }
-p-slider{
-    margin:10px;
+
+p-slider {
+    margin: 10px;
 }
-.sliderContainer{
-    width:100%;
-    height:auto;
-    display:grid;
+
+.sliderContainer {
+    width: 100%;
+    height: auto;
+    display: grid;
     grid-template-columns: 10% 20% auto;
+}
+
+.listRow {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    cursor: pointer;
+    column-gap: 10px;
+    justify-content: left;
+    align-self: center;
+}
+
+.typeRow {
+    display: grid;
+    grid-template-columns: auto auto;
+    cursor: pointer;
+}
+
+.rowImg {
+    align-self: center;
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 20px;
+    float: left;
+    cursor: pointer;
 }

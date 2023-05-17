@@ -18,13 +18,11 @@
                     <label class="ml-2">{{ filter.name }}</label>
                 </div>
                 <br>
-                <div *ngFor="let slider of sliders; index as i">
-                    <div class="sliderContainer">
-                        <label>{{slider.display}}</label>
-                        <input type="number" pInputText [(ngModel)]="slider.minValue" />
-                        <p-slider [(ngModel)]="slider.minValue" (onSlideEnd)="updateFilters()"
-                            [max]="slider.maxValue"></p-slider>
-                    </div>
+                <div *ngFor="let slider of sliders; index as i" class="sliderContainer">
+                    <label>{{slider.display}}</label>
+                    <input type="number" pInputText [(ngModel)]="slider.minValue" />
+                    <p-slider [(ngModel)]="slider.minValue" (onSlideEnd)="updateFilters()"
+                        [max]="slider.maxValue"></p-slider>
                 </div>
             </p-card>
         </div>
@@ -36,11 +34,13 @@
                 <p-virtualScroller [value]="filteredfusions" [style]="{'width': '100%'}" scrollHeight="500px"
                     [itemSize]="38">
                     <ng-template pTemplate="fusion" let-fusion>
-                        <div (click)="selectFusion(fusion)" style="cursor: pointer">
-                            Head: {{fusion.head}}
-                            | Body: {{fusion.body}}
-                            | BST: {{fusion.BST}}
-                            | Type: {{fusion.type | typeDisplay}}
+                        <div (click)="selectFusion(fusion)" class="listRow">
+                            <label style="cursor: pointer">Head: {{fusion.head}}</label>
+                            <label style="cursor: pointer">| Body: {{fusion.body}}</label>
+                            <label style="cursor: pointer">| BST: {{fusion.BST}}</label>
+                            <label style="cursor: pointer">| Type: </label>
+                            <div class="typeRow"><img *ngFor="let type of fusion.type" class="rowImg"
+                                    src="../../../assets/types/{{type}}.png"></div>
                         </div>
                         <p-divider></p-divider>
                     </ng-template>
@@ -51,7 +51,7 @@
             <p-card *ngIf="selectedFusion" id="fusion">
                 <img *ngIf="selectedFusion.imgName != null" [src]="selectedFusion.imgName"> <br>
                 {{selectedFusion.name}} <br>
-                Type: {{selectedFusion.type | typeDisplay}}<br>
+                <img *ngFor="let type of selectedFusion.type" src="../../../assets/types/{{type}}.png"><br>
                 HP: {{selectedFusion.HP}} <br>
                 Atk: {{selectedFusion.attack}}<br>
                 Def: {{selectedFusion.defense}}<br>

@@ -92,6 +92,8 @@ export class fusedpokemon extends pokemon {
         if (head.id in fusedpokemon.typeExceptions) {
             headProvided = fusedpokemon.typeExceptions[head.id]
         }
+        if(headProvided == bodyProvided){return [headProvided]}
+
         return [headProvided, bodyProvided]
     }
 

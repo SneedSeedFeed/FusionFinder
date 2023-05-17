@@ -41,7 +41,10 @@ export class pokemon {
     constructor(id: number, name: string, type: string[], HP: number, attack: number, defense: number, spAttack: number, spDefense: number, speed: number, abilities: ability[]) {
         this.id = id
         this.name = name
-        this.type = type
+        this.type = []
+        type.forEach(val => {
+            this.type.push(val.toLowerCase())
+        })
         this.HP = HP
         this.attack = attack
         this.defense = defense
