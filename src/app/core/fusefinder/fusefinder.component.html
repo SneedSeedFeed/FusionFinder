@@ -77,9 +77,9 @@
                     selectedPokemon.spDefense}})</label><ng-template #lessSPDef><label
                         class="lessThan">({{selectedFusion.spDefense -
                         selectedPokemon.spDefense}})</label></ng-template><br>
-                Speed: {{selectedFusion.speed}}<label class="greaterThan"
+                Speed: {{selectedFusion.speed}} <label class="greaterThan"
                     *ngIf="selectedFusion.speed >= selectedPokemon.speed;else lessSpeed">(+{{selectedFusion.speed -
-                    selectedPokemon.speed}}) </label><ng-template #lessSpeed><label class="lessThan">({{selectedFusion.speed -
+                    selectedPokemon.speed}})</label><ng-template #lessSpeed><label class="lessThan">({{selectedFusion.speed -
                         selectedPokemon.speed}})</label></ng-template><br>
                 BST: {{selectedFusion.BST}} <label class="greaterThan"
                     *ngIf="selectedFusion.BST >= selectedPokemon.BST;else lessBST">(+{{selectedFusion.BST
