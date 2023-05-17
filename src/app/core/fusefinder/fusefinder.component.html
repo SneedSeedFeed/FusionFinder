@@ -21,7 +21,7 @@
                 <div *ngFor="let slider of sliders; index as i" class="sliderContainer">
                     <label>{{slider.display}}</label>
                     <input type="number" pInputText [(ngModel)]="slider.minValue" />
-                    <p-slider [(ngModel)]="slider.minValue" (onSlideEnd)="updateFilters()"
+                    <p-slider [(ngModel)]="slider.minValue" (onChange)="updateFilters()"
                         [max]="slider.maxValue"></p-slider>
                 </div>
             </p-card>
@@ -40,7 +40,7 @@
                             <label style="cursor: pointer">| BST: {{fusion.BST}}</label>
                             <label style="cursor: pointer">| Type: </label>
                             <div class="typeRow"><img *ngFor="let type of fusion.type" class="rowImg"
-                                    src="/assets/types/{{type}}.png"></div>
+                                    src="assets/types/{{type}}.png"></div>
                         </div>
                         <p-divider></p-divider>
                     </ng-template>
@@ -51,14 +51,14 @@
             <p-card *ngIf="selectedFusion" id="fusion">
                 <img *ngIf="selectedFusion.imgName != null" [src]="selectedFusion.imgName"> <br>
                 {{selectedFusion.name}} <br>
-                <img *ngFor="let type of selectedFusion.type" src="/assets/types/{{type}}.png"><br>
-                HP: {{selectedFusion.HP}}<br>
-                Atk: {{selectedFusion.attack}}<br>
-                Def: {{selectedFusion.defense}}<br>
-                Sp. Atk: {{selectedFusion.spAttack}}<br>
-                Sp. Def: {{selectedFusion.spDefense}}<br>
-                Speed: {{selectedFusion.speed}}<br>
-                BST: {{selectedFusion.BST}}<br>
+                <img *ngFor="let type of selectedFusion.type" src="assets/types/{{type}}.png"><br>
+                HP: {{selectedFusion.HP}} ({{selectedFusion.HP | statDiffDisplay: selectedPokemon.HP}})<br>
+                Atk: {{selectedFusion.attack}} ({{selectedFusion.attack | statDiffDisplay: selectedPokemon.attack}})<br>
+                Def: {{selectedFusion.defense}} ({{selectedFusion.defense | statDiffDisplay: selectedPokemon.defense}})<br>
+                Sp. Atk: {{selectedFusion.spAttack}} ({{selectedFusion.spAttack | statDiffDisplay: selectedPokemon.spAttack}})<br>
+                Sp. Def: {{selectedFusion.spDefense}} ({{selectedFusion.spDefense | statDiffDisplay: selectedPokemon.spDefense}})<br>
+                Speed: {{selectedFusion.speed}} ({{selectedFusion.speed | statDiffDisplay: selectedPokemon.speed}})<br>
+                BST: {{selectedFusion.BST}} ({{selectedFusion.BST | statDiffDisplay: selectedPokemon.BST}})<br>
                 Abilities: {{selectedFusion.abilities | abilityDisplay}}<br>
                 <br>
                 Hidden abilities are denoted with brackets

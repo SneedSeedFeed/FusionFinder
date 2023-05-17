@@ -11,6 +11,7 @@ import { CoreRoutingModule } from './core-routing.module';
 import { PageContainerComponent } from './page-container/page-container.component';
 import { typeDisplay } from './_pipes/typeDisplay';
 import { abilityDisplay } from './_pipes/abilityDisplay'
+import { statDiffDisplay } from './_pipes/statDiffPipe'
 
 //PrimeNG Imports
 import { CardModule } from 'primeng/card';
@@ -27,7 +28,8 @@ import { SliderModule } from 'primeng/slider'
     FusefinderComponent,
     PageContainerComponent,
     typeDisplay,
-    abilityDisplay
+    abilityDisplay,
+    statDiffDisplay
   ],
   imports: [
     BrowserModule,
