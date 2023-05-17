@@ -11,7 +11,7 @@
                     [virtualScrollItemSize]="38" placeholder="Filter type by?" [options]="typeFilters" optionLabel="name"
                     [(ngModel)]="selectedFilter" (onChange)="updateFilters()"></p-dropdown><br>
                 Filter by ability:
-                <input type="text" pInputText (keyup)="keyUp()" [(ngModel)]="abilitySearch"/><br>
+                <input type="text" pInputText (keyup)="updateFilters()" [(ngModel)]="abilitySearch"/><br>
                 <div *ngFor="let filter of legendaryFilters" class="field-checkbox">
                     <p-radioButton name="category" (onClick)="updateFilters()" [value]="filter.filter" [(ngModel)]="selectedLegendaryFilter"></p-radioButton>
                     <label class="ml-2">{{ filter.name }}</label>

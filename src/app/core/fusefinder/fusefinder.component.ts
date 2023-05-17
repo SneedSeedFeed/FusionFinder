@@ -138,7 +138,16 @@ export class FusefinderComponent {
   selectedFilter = this.typeFilters[0]
 
   abilitySearch: string = "";
-  abilitySearchFunc: { (val: pokemon): boolean } = () => { return true };
+  abilitySearchFunc: { (val: pokemon): boolean } = (val) => {
+    if (this.abilitySearch.trim() == "") { return true }
+    let hasAbility: boolean = false;
+    val.abilities.forEach(ability => {
+      if (ability.name.toUpperCase().includes(this.abilitySearch.toUpperCase())) {
+        hasAbility = true
+      }
+    })
+    return hasAbility
+  };
 
   //Load data from pokedex.json (has been manually editted to make typings up to date, stats may be slightly off)
   constructor() {
@@ -185,22 +194,6 @@ export class FusefinderComponent {
     }
 
     return false;
-  }
-
-  keyUp() {
-    //Function called in filter can't access variables in the component. So every time the user inputs a key we create a new function. Cludgy but fuck it it works
-    this.abilitySearchFunc = (val) => {
-      if (this.abilitySearch.trim() == "") { return true }
-      let hasAbility: boolean = false;
-      val.abilities.forEach(ability => {
-        if (ability.name.toUpperCase().includes(this.abilitySearch.toUpperCase())) {
-          hasAbility = true
-        }
-      })
-      return hasAbility
-    }
-
-    this.update()
   }
 
   //Updates fusion list with new pokemon 
