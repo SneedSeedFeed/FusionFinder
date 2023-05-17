@@ -52,13 +52,40 @@
                 <img *ngIf="selectedFusion.imgName != null" [src]="selectedFusion.imgName"> <br>
                 {{selectedFusion.name}} <br>
                 <img *ngFor="let type of selectedFusion.type" src="assets/types/{{type}}.png"><br>
-                HP: {{selectedFusion.HP}} ({{selectedFusion.HP | statDiffDisplay: selectedPokemon.HP}})<br>
-                Atk: {{selectedFusion.attack}} ({{selectedFusion.attack | statDiffDisplay: selectedPokemon.attack}})<br>
-                Def: {{selectedFusion.defense}} ({{selectedFusion.defense | statDiffDisplay: selectedPokemon.defense}})<br>
-                Sp. Atk: {{selectedFusion.spAttack}} ({{selectedFusion.spAttack | statDiffDisplay: selectedPokemon.spAttack}})<br>
-                Sp. Def: {{selectedFusion.spDefense}} ({{selectedFusion.spDefense | statDiffDisplay: selectedPokemon.spDefense}})<br>
-                Speed: {{selectedFusion.speed}} ({{selectedFusion.speed | statDiffDisplay: selectedPokemon.speed}})<br>
-                BST: {{selectedFusion.BST}} ({{selectedFusion.BST | statDiffDisplay: selectedPokemon.BST}})<br>
+                HP: {{selectedFusion.HP}} <label class="greaterThan"
+                    *ngIf="selectedFusion.HP >= selectedPokemon.HP;else less">(+{{selectedFusion.HP -
+                    selectedPokemon.HP}})</label><ng-template #less><label class="lessThan">({{selectedFusion.HP -
+                        selectedPokemon.HP}})</label></ng-template><br>
+                Atk: {{selectedFusion.attack}} <label class="greaterThan"
+                    *ngIf="selectedFusion.attack >= selectedPokemon.attack;else less">(+{{selectedFusion.attack -
+                    selectedPokemon.attack}})</label><ng-template #less><label class="lessThan">({{selectedFusion.attack
+                        -
+                        selectedPokemon.attack}})</label></ng-template><br>
+                Def: {{selectedFusion.defense}} <label class="greaterThan"
+                    *ngIf="selectedFusion.defense >= selectedPokemon.defense;else less">(+{{selectedFusion.defense -
+                    selectedPokemon.defense}})</label><ng-template #less><label
+                        class="lessThan">({{selectedFusion.defense -
+                        selectedPokemon.defense}})</label></ng-template><br>
+                Sp. Atk: {{selectedFusion.spAttack}} <label class="greaterThan"
+                    *ngIf="selectedFusion.spAttack >= selectedPokemon.spAttack;else less">(+{{selectedFusion.spAttack -
+                    selectedPokemon.spAttack}})</label><ng-template #less><label
+                        class="lessThan">({{selectedFusion.spAttack -
+                        selectedPokemon.spAttack}})</label></ng-template><br>
+                Sp. Def: {{selectedFusion.spDefense}} <label class="greaterThan"
+                    *ngIf="selectedFusion.spDefense >= selectedPokemon.spDefense;else less">(+{{selectedFusion.spDefense
+                    -
+                    selectedPokemon.spDefense}})</label><ng-template #less><label
+                        class="lessThan">({{selectedFusion.spDefense -
+                        selectedPokemon.spDefense}})</label></ng-template><br>
+                Speed: {{selectedFusion.speed}}<label class="greaterThan"
+                    *ngIf="selectedFusion.speed >= selectedPokemon.speed;else less">(+{{selectedFusion.speed -
+                    selectedPokemon.speed}})</label><ng-template #less><label class="lessThan">({{selectedFusion.speed -
+                        selectedPokemon.speed}})</label></ng-template><br>
+                BST: {{selectedFusion.BST}} <label class="greaterThan"
+                    *ngIf="selectedFusion.BST >= selectedPokemon.BST;else less">(+{{selectedFusion.BST
+                    -
+                    selectedPokemon.BST}})</label><ng-template #less><label class="lessThan">({{selectedFusion.BST -
+                        selectedPokemon.BST}})</label></ng-template><br>
                 Abilities: {{selectedFusion.abilities | abilityDisplay}}<br>
                 <br>
                 Hidden abilities are denoted with brackets
