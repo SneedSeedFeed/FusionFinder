@@ -8,15 +8,24 @@
                     [(ngModel)]="selectedSort" (onChange)="updateFilters()"></p-dropdown><br>
                 Filter by type:
                 <p-dropdown autoWidth="true" [style]="{'width':'300px'}" [virtualScroll]="true"
-                    [virtualScrollItemSize]="38" placeholder="Filter type by?" [options]="typeFilters" optionLabel="name"
-                    [(ngModel)]="selectedFilter" (onChange)="updateFilters()"></p-dropdown><br>
+                    [virtualScrollItemSize]="38" placeholder="Filter type by?" [options]="typeFilters"
+                    optionLabel="name" [(ngModel)]="selectedFilter" (onChange)="updateFilters()"></p-dropdown><br>
                 Filter by ability:
-                <input type="text" pInputText (keyup)="updateFilters()" [(ngModel)]="abilitySearch"/><br>
+                <input type="text" pInputText (keyup)="updateFilters()" [(ngModel)]="abilitySearch" /><br>
                 <div *ngFor="let filter of legendaryFilters" class="field-checkbox">
-                    <p-radioButton name="category" (onClick)="updateFilters()" [value]="filter.filter" [(ngModel)]="selectedLegendaryFilter"></p-radioButton>
+                    <p-radioButton name="category" (onClick)="updateFilters()" [value]="filter.filter"
+                        [(ngModel)]="selectedLegendaryFilter"></p-radioButton>
                     <label class="ml-2">{{ filter.name }}</label>
                 </div>
-
+                <br>
+                <div *ngFor="let slider of sliders; index as i">
+                    <div class="sliderContainer">
+                        <label>{{slider.display}}</label>
+                        <input type="number" pInputText [(ngModel)]="slider.minValue" />
+                        <p-slider [(ngModel)]="slider.minValue" (onSlideEnd)="updateFilters()"
+                            [max]="slider.maxValue"></p-slider>
+                    </div>
+                </div>
             </p-card>
         </div>
         <div class="third">
@@ -24,12 +33,13 @@
                 <p-dropdown autoWidth="true" [filter]="true" [style]="{'width':'300px'}" [virtualScroll]="true"
                     [virtualScrollItemSize]="38" placeholder="Select a Pokemon" [options]="pokedex" optionLabel="name"
                     [(ngModel)]="selectedPokemon" (onChange)="update()"></p-dropdown>
-                <p-virtualScroller [value]="filteredfusions" [style]="{'width': '100%'}" scrollHeight="500px" [itemSize]="38">
+                <p-virtualScroller [value]="filteredfusions" [style]="{'width': '100%'}" scrollHeight="500px"
+                    [itemSize]="38">
                     <ng-template pTemplate="fusion" let-fusion>
-                        <div  (click)="selectFusion(fusion)" style="cursor: pointer">
+                        <div (click)="selectFusion(fusion)" style="cursor: pointer">
                             Head: {{fusion.head}}
                             | Body: {{fusion.body}}
-                            | BST: {{getBST(fusion)}}
+                            | BST: {{fusion.BST}}
                             | Type: {{fusion.type | typeDisplay}}
                         </div>
                         <p-divider></p-divider>
@@ -39,7 +49,7 @@
         </div>
         <div class="third">
             <p-card *ngIf="selectedFusion" id="fusion">
-                <img *ngIf="selectedFusion.imgName != null" [src]="selectedFusion.imgName" > <br>
+                <img *ngIf="selectedFusion.imgName != null" [src]="selectedFusion.imgName"> <br>
                 {{selectedFusion.name}} <br>
                 Type: {{selectedFusion.type | typeDisplay}}<br>
                 HP: {{selectedFusion.HP}} <br>
@@ -48,9 +58,9 @@
                 Sp. Atk: {{selectedFusion.spAttack}}<br>
                 Sp. Def: {{selectedFusion.spDefense}}<br>
                 Speed: {{selectedFusion.speed}}<br>
-                BST: {{getBST(selectedFusion)}}<br>
-                Abilities: {{selectedFusion.abilities | abilityDisplay}}<br><br>
-
+                BST: {{selectedFusion.BST}}<br>
+                Abilities: {{selectedFusion.abilities | abilityDisplay}}<br>
+                <br>
                 Hidden abilities are denoted with brackets
             </p-card>
         </div>

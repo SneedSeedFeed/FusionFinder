@@ -12,3 +12,12 @@
     height: auto;
     margin: 30px;
 }
+p-slider{
+    margin:10px;
+}
+.sliderContainer{
+    width:100%;
+    height:auto;
+    display:grid;
+    grid-template-columns: 10% 20% auto;
+}

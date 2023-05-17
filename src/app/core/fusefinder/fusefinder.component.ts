@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 //@ts-ignore
 import rawDex from '../../../assets/pokedex.json'
 
-import { pokemon } from '../_interfaces/pokemon';
-import { fusedpokemon } from '../_interfaces/fusedpokemon';
+import { pokemon } from '../_classes/pokemon';
+import { fusedpokemon } from '../_classes/fusedpokemon';
 import { ability } from '../_interfaces/ability';
 
 @Component({
@@ -12,88 +12,33 @@ import { ability } from '../_interfaces/ability';
   styleUrls: ['./fusefinder.component.scss']
 })
 export class FusefinderComponent {
-  //For non gen 1-2, this is a dictionary/map of natdex to infinite fusion dex numbers
-  readonly IDList: { [natdex: number]: number } = {
-    298: 252, 360: 253, 424: 254, 429: 255, 430: 256, 438: 257, 439: 258, 440: 259,
-    446: 260, 458: 261, 461: 262, 462: 263, 463: 264, 464: 265, 465: 266, 466: 267, 467: 269, 468: 269,
-    469: 270, 470: 271, 471: 272, 472: 273, 473: 274, 474: 275, 252: 276, 253: 277, 254: 278, 255: 279,
-    256: 280, 257: 281, 258: 282, 259: 283, 260: 284, 280: 285, 281: 286, 282: 287, 475: 288, 292: 289,
-    352: 290, 374: 291, 375: 292, 376: 293, 399: 294, 442: 295, 448: 296, 443: 297, 444: 298, 445: 299,
-    303: 300, 345: 301, 346: 302, 347: 303, 348: 304, 408: 305, 409: 306, 410: 307, 411: 308, 289: 309,
-    359: 310, 355: 311, 356: 312, 477: 313, 321: 314, 493: 315, 387: 316, 388: 317, 389: 318, 390: 319,
-    391: 320, 392: 321, 393: 322, 394: 323, 395: 324, 299: 325, 476: 326, 679: 327, 680: 328, 681: 329,
-    624: 330, 625: 331, 405: 332, 306: 333, 330: 334, 350: 335, 373: 336, 601: 337, 571: 338, 700: 339,
-    382: 340, 383: 341, 384: 342, 483: 343, 484: 344, 487: 345, 486: 346, 491: 347, 649: 348, 643: 349,
-    644: 350, 646: 351, 407: 352, 426: 353, 428: 354, 286: 355, 291: 356, 354: 357, 479: 358, 579: 359,
-    547: 360, 553: 361, 563: 362, 596: 363, 598: 364, 607: 365, 608: 366, 609: 367, 612: 368, 623: 369,
-    771: 370, 707: 371, 663: 372, 778: 373, 637: 374, 633: 375, 634: 376, 635: 377, 380: 378, 381: 379,
-    386: 380, 385: 381, 290: 382, 400: 383, 447: 384, 287: 385, 288: 386, 320: 387, 403: 388, 404: 389,
-    304: 390, 305: 391, 328: 392, 329: 393, 349: 394, 371: 395, 372: 396, 599: 397, 600: 398, 570: 399,
-    406: 400, 315: 401, 425: 402, 427: 403, 285: 404, 353: 405, 577: 406, 578: 407, 546: 408, 551: 409,
-    552: 410, 562: 411, 595: 412, 597: 413, 610: 414, 611: 415, 622: 416, 661: 417, 662: 418, 636: 419,
-    618: 420
+  sliders: { display: string, stat: string, minValue: number, maxValue: number }[] = [{ display: "HP", stat: "HP", minValue: 0, maxValue: 255 },
+  { display: "Atk", stat: "attack", minValue: 0, maxValue: 165 },
+  { display: "Def", stat: "defense", minValue: 0, maxValue: 230 },
+  { display: "Sp. Atk", stat: "spAttack", minValue: 0, maxValue: 154 },
+  { display: "Sp. Def", stat: "spDefense", minValue: 0, maxValue: 230 },
+  { display: "Speed", stat: "speed", minValue: 0, maxValue: 160 },
+  { display: "BST", stat: "BST", minValue: 0, maxValue: 720 }]
+  sliderFilter: { (val: pokemon): boolean } = (a) => {
+    let meetsMin: boolean = true
+    this.sliders.forEach(slider => {
+      if (slider.stat) {
+        if (a[slider.stat] < slider.minValue) { meetsMin = false }
+      } else {
+        if (a.BST < slider.minValue) { meetsMin = false }
+      }
+    })
+    return meetsMin
   }
-
-
 
   readonly legendaryIDs: number[] = [144, 145, 146, 150, 151, 249, 250, 251, 243, 244, 245, 380, 381, 382, 383, 384, 385, 386, 483, 484, 486, 487, 491, 493, 643, 644, 646, 649]
   legendaryFilters: { name: string, filter: { (val: fusedpokemon): boolean } }[] = [{ name: "Include legendary/mythic pokemon", filter: () => { return true } }, {
     name: "No legendary/mythic", filter: (a) => {
-      if ((this.legendaryIDs.includes(a.headID) && a.headID!= this.selectedPokemon.id || this.legendaryIDs.includes(a.bodyID) && a.bodyID != this.selectedPokemon.id)) { return false }
+      if ((this.legendaryIDs.includes(a.headID) && a.headID != this.selectedPokemon.id || this.legendaryIDs.includes(a.bodyID) && a.bodyID != this.selectedPokemon.id)) { return false }
       return true
     }
   }]
   selectedLegendaryFilter = this.legendaryFilters[0].filter
-
-  //Manually compiled dictionary of every pokemon that has a special exception in which type it gives
-  //These IDs are the NATDEX ID, NOT INFINITE FUSION DEX
-  readonly typeExceptions: { [id: number]: string } = {
-    1: "Grass",
-    2: "Grass",
-    3: "Grass",
-    6: "Fire",
-    74: "Rock",
-    75: "Rock",
-    76: "Rock",
-    92: "Ghost",
-    93: "Ghost",
-    94: "Ghost",
-    95: "Rock",
-    123: "Bug",
-    130: "Water",
-    144: "Ice",
-    145: "Electric",
-    146: "Fire",
-    149: "Dragon",
-    208: "Steel",
-    16: "Flying",
-    17: "Flying",
-    18: "Flying",
-    21: "Flying",
-    22: "Flying",
-    83: "Flying",
-    84: "Flying",
-    85: "Flying",
-    163: "Flying",
-    164: "Flying",
-    276: "Flying",
-    277: "Flying",
-    333: "Flying",
-    396: "Flying",
-    397: "Flying",
-    398: "Flying",
-    441: "Flying",
-    519: "Flying",
-    520: "Flying",
-    521: "Flying",
-    627: "Flying",
-    628: "Flying",
-    661: "Flying",
-    731: "Flying",
-    732: "Flying",
-    733: "Flying",
-    931: "Flying",
-  }
 
   //Our list of pokemon in the game
   readonly pokedex: pokemon[] = []
@@ -112,7 +57,7 @@ export class FusefinderComponent {
   { name: "Sp. Atk", sort: (a, b) => { return b.spAttack - a.spAttack } },
   { name: "Sp. Def", sort: (a, b) => { return b.spDefense - a.spDefense } },
   { name: "Speed", sort: (a, b) => { return b.speed - a.speed } },
-  { name: "BST", sort: (a, b) => { return this.getBST(b) - this.getBST(a) } }]
+  { name: "BST", sort: (a, b) => { return b.BST - a.BST } }]
   selectedSort = this.sortOptions[0]
 
   //Array of our different type filters and their associated name
@@ -155,31 +100,11 @@ export class FusefinderComponent {
     let dexData: any[] = rawDex;
     dexData.forEach(value => {
       if (value.id && value.name && value.type && value.base && this.isInGame(value.id)) {
-        this.pokedex.push({
-          id: value.id,
-          name: value.name.english,
-          type: value.type,
-          HP: value.base.HP,
-          attack: value.base.Attack,
-          defense: value.base.Defense,
-          spAttack: value.base["Sp. Attack"],
-          spDefense: value.base["Sp. Defense"],
-          speed: value.base.Speed,
-          abilities: this.convertRawAbilities(value.profile.ability),
-          newdexID: this.getNewDexID(value.id)
-        })
+        this.pokedex.push(new pokemon(value.id, value.name.english, value.type, value.base.HP, value.base.Attack, value.base.Defense, value.base["Sp. Attack"], value.base["Sp. Defense"], value.base.Speed,
+          this.convertRawAbilities(value.profile.ability)))
       }
     })
     console.timeEnd("Init")
-  }
-
-  //Pokedex stores abilities in a way I dislike so I convert it to our ability interface for our pokemon
-  private convertRawAbilities(val: string[][]): ability[] {
-    let abilityList: ability[] = []
-    val.forEach(abilityPair => {
-      abilityList.push({ name: abilityPair[0], isHidden: Boolean(JSON.parse(abilityPair[1])) })
-    })
-    return abilityList
   }
 
   //When a user clicks a pokemon from the virtual scroller we select it and bring it up on the right hand side
@@ -189,7 +114,7 @@ export class FusefinderComponent {
 
   //Checks a given pokemon from our raw data is actually in the game
   private isInGame(id: number): Boolean {
-    if (id < 252 || this.IDList[id]) {
+    if (id < 252 || pokemon.IDList[id]) {
       return true
     }
 
@@ -208,7 +133,7 @@ export class FusefinderComponent {
   updateFilters() {
     if (this.selectedPokemon) {
       console.time("Filtered in")
-      this.filteredfusions = this.allFusions.filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).sort(this.selectedSort.sort)
+      this.filteredfusions = this.allFusions.filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).filter(this.sliderFilter).sort(this.selectedSort.sort)
       console.timeEnd("Filtered in")
     }
   }
@@ -230,77 +155,15 @@ export class FusefinderComponent {
 
   //Fuses two pokemon and calculates the results, no we don't calculate the name because I'm lazy
   private getFusion(body: pokemon, head: pokemon): fusedpokemon {
-    return {
-      id: 0,
-      name: "Body: " + body.name + " | Head: " + head.name,
-      type: this.calcType(body, head),
-      HP: this.calcStat(head.HP, body.HP, false),
-      spDefense: this.calcStat(head.spDefense, body.spDefense, false),
-      spAttack: this.calcStat(head.spAttack, body.spAttack, false),
-      attack: this.calcStat(head.attack, body.attack, true),
-      defense: this.calcStat(head.defense, body.defense, true),
-      speed: this.calcStat(head.speed, body.speed, true),
-      head: head.name,
-      headID: head.id,
-      headGameID: head.newdexID,
-      bodyGameID: body.newdexID,
-      body: body.name,
-      bodyID: body.id,
-      abilities: head.abilities.concat(body.abilities),
-      newdexID: 0,
-      imgName: this.getImgLoc(head.newdexID, body.newdexID)
-    }
+    return new fusedpokemon(head, body)
   }
 
-  //Calculates a stat from two pokemon, switch whether it's body or head sided with the boolean
-  private calcStat(headstat: number, bodystat: number, bodySided: boolean): number {
-    if (bodySided) {
-      return Math.floor(2 * (bodystat / 3) + (headstat / 3))
-    }
-    else {
-      return Math.floor((bodystat / 3) + 2 * (headstat / 3))
-    }
-  }
-
-  //Works out the type. 
-  private calcType(body: pokemon, head: pokemon): string[] {
-    //First we set it to the head's primary and the body's last type (secondary if there is one)
-    let bodyProvided = body.type[body.type.length - 1]
-    let headProvided = head.type[0]
-
-    //If the head and body have the same type, and the body has a second type available we use that as the secondary type instead
-    if (headProvided == bodyProvided && body.type.length == 2) {
-      bodyProvided = body.type[0]
-    }
-
-    //Apply the special exceptions for each pokemon
-    if (body.id in this.typeExceptions) {
-      bodyProvided = this.typeExceptions[body.id]
-    }
-    if (head.id in this.typeExceptions) {
-      headProvided = this.typeExceptions[head.id]
-    }
-    return [headProvided, bodyProvided]
-  }
-
-  private getImgLoc(headID: number, bodyID: number): string | null {
-    let address = "https://raw.githubusercontent.com/SneedSeedFeed/FusionFinderAssets/main/CustomBattlers/" + headID + "." + bodyID + ".png"
-    return address
-  }
-
-  //Gets BST for a given pokemon (or fusion since it inherits from Pokemon)
-  getBST(target: pokemon): number {
-    return target.HP + target.attack + target.defense + target.spAttack + target.spDefense + target.speed
-  }
-
-  private getNewDexID(natDexID: number): number {
-    if (natDexID <= 251) {
-      return natDexID
-    }
-    if (this.IDList[natDexID]) {
-      return this.IDList[natDexID]
-    }
-
-    return natDexID
+  //Pokedex stores abilities in a way I dislike so I convert it to our ability interface for our pokemon
+  private convertRawAbilities(val: string[][]): ability[] {
+    let abilityList: ability[] = []
+    val.forEach(abilityPair => {
+      abilityList.push({ name: abilityPair[0], isHidden: Boolean(JSON.parse(abilityPair[1])) })
+    })
+    return abilityList
   }
 }
