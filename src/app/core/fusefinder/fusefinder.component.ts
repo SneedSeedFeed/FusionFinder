@@ -39,7 +39,7 @@ export class FusefinderComponent {
   readonly legendaryIDs: number[] = [144, 145, 146, 150, 151, 249, 250, 251, 243, 244, 245, 380, 381, 382, 383, 384, 385, 386, 483, 484, 486, 487, 491, 493, 643, 644, 646, 649]
   legendaryFilters: { name: string, filter: { (val: fusedpokemon): boolean } }[] = [{ name: "Include legendary/mythic pokemon", filter: () => { return true } }, {
     name: "No legendary/mythic", filter: (a) => {
-      if (this.legendaryIDs.includes(a.headID) || this.legendaryIDs.includes(a.bodyID)) { return false }
+      if ((this.legendaryIDs.includes(a.headID) && a.headID!= this.selectedPokemon.id || this.legendaryIDs.includes(a.bodyID) && a.bodyID != this.selectedPokemon.id)) { return false }
       return true
     }
   }]

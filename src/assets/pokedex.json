@@ -3460,7 +3460,7 @@
       "height": "1.5 m",
       "weight": "40.5 kg",
       "egg": ["Amorphous"],
-      "ability": [["Cursed Body", "false"]],
+      "ability": [["Levitate", "false"]],
       "gender": "50:50"
     },
     "image": {
