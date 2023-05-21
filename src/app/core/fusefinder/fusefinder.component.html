@@ -23,6 +23,11 @@
                     <input type="number" pInputText [(ngModel)]="slider.minValue" />
                     <p-slider [(ngModel)]="slider.minValue" (onChange)="updateFilters()"
                         [max]="slider.maxValue"></p-slider>
+                </div><br>
+                <div *ngFor="let filter of spriteFilters" class="field-checkbox">
+                    <p-radioButton name="category" (onClick)="updateFilters()" [value]="filter.filter"
+                        [(ngModel)]="selectedSpriteFilter"></p-radioButton>
+                    <label class="ml-2">{{ filter.name }}</label>
                 </div>
             </p-card>
         </div>
@@ -35,8 +40,7 @@
                     [itemSize]="38">
                     <ng-template pTemplate="fusion" let-fusion>
                         <div (click)="selectFusion(fusion)" class="listRow">
-                            <label style="cursor: pointer">Head: {{fusion.head}}</label>
-                            <label style="cursor: pointer">| Body: {{fusion.body}}</label>
+                            <label style="cursor: pointer">{{fusion.head}} / {{fusion.body}}</label>
                             <label style="cursor: pointer">| BST: {{fusion.BST}}</label>
                             <label style="cursor: pointer">| Type: </label>
                             <div class="typeRow"><img *ngFor="let type of fusion.type" class="rowImg"

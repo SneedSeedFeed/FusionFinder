@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 //@ts-ignore
 import rawDex from '../../../assets/pokedex.json'
+//@ts-ignore
+import spriteList from '../../../assets/spritelist.json'
 
 import { pokemon } from '../_classes/pokemon';
 import { fusedpokemon } from '../_classes/fusedpokemon';
@@ -39,6 +41,15 @@ export class FusefinderComponent {
     }
   }]
   selectedLegendaryFilter = this.legendaryFilters[0].filter
+
+  readonly spriteDict: {[headID: string]: string[]} = spriteList
+  spriteFilters: { name: string, filter: { (val: fusedpokemon): boolean } }[] = [{ name: "Any sprites", filter: () => { return true } }, {
+    name: "Custom Sprites Only", filter: (a) => {
+      if (this.spriteDict[a.headGameID.toString()].includes(a.bodyGameID.toString())) { return true }
+      return false
+    }
+  }]
+  selectedSpriteFilter = this.spriteFilters[0].filter
 
   //Our list of pokemon in the game
   readonly pokedex: pokemon[] = []
@@ -133,7 +144,7 @@ export class FusefinderComponent {
   updateFilters() {
     if (this.selectedPokemon) {
       console.time("Filtered in")
-      this.filteredfusions = this.allFusions.filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).filter(this.sliderFilter).sort(this.selectedSort.sort)
+      this.filteredfusions = this.allFusions.filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).filter(this.sliderFilter).filter(this.selectedSpriteFilter).sort(this.selectedSort.sort)
       console.timeEnd("Filtered in")
     }
   }
