@@ -105,6 +105,8 @@ export class FusefinderComponent {
     return hasAbility
   };
 
+  spriteIndex: number = 0
+
   //Load data from pokedex.json (has been manually editted to make typings up to date, stats may be slightly off)
   constructor() {
     console.time("Init")
@@ -120,6 +122,7 @@ export class FusefinderComponent {
 
   //When a user clicks a pokemon from the virtual scroller we select it and bring it up on the right hand side
   selectFusion(selected: fusedpokemon) {
+    this.spriteIndex = 0
     this.selectedFusion = selected
   }
 
@@ -177,10 +180,14 @@ export class FusefinderComponent {
     return abilityList
   }
 
-  getSprite(val: fusedpokemon, index:number): string {
+  getSprite(val: fusedpokemon, index: number): string {
     let spriteLocation = "https://raw.githubusercontent.com//SneedSeedFeed//FusionFinderAssets//main//CustomBattlers//"
-    
-
     return spriteLocation + `${val.headGameID}\\${val.sprites[index]}`
+  }
+
+  nextSprite() {
+    if (this.spriteIndex == this.selectedFusion.sprites.length - 1) {
+      this.spriteIndex = 0
+    } else { this.spriteIndex += 1 }
   }
 }

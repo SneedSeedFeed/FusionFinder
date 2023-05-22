@@ -21,6 +21,7 @@ import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext'
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { SliderModule } from 'primeng/slider'
+import { ButtonModule } from 'primeng/button'
 
 
 @NgModule({
@@ -33,6 +34,7 @@ import { SliderModule } from 'primeng/slider'
   ],
   imports: [
     BrowserModule,
+    ButtonModule,
     RadioButtonModule,
     InputTextModule,
     BrowserAnimationsModule,

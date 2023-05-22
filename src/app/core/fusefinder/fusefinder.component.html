@@ -7,7 +7,7 @@
                     [virtualScrollItemSize]="38" placeholder="Sort by?" [options]="sortOptions" optionLabel="name"
                     [(ngModel)]="selectedSort" (onChange)="updateFilters()"></p-dropdown><br>
                 Filter by type:
-                <p-dropdown autoWidth="true" [style]="{'width':'300px'}" [virtualScroll]="true"
+                <p-dropdown autoWidth="true" [filter]="true" [style]="{'width':'300px'}" [virtualScroll]="true"
                     [virtualScrollItemSize]="38" placeholder="Filter type by?" [options]="typeFilters"
                     optionLabel="name" [(ngModel)]="selectedFilter" (onChange)="updateFilters()"></p-dropdown><br>
                 Filter by ability:
@@ -53,7 +53,7 @@
         </div>
         <div class="third">
             <p-card *ngIf="selectedFusion" id="fusion">
-                <img *ngIf="selectedFusion.sprites != null" [src]="getSprite(selectedFusion,0)"> <br>
+                <img *ngIf="selectedFusion.sprites != null" [src]="getSprite(selectedFusion,spriteIndex)"> <br>
                 {{selectedFusion.name}} <br>
                 <img *ngFor="let type of selectedFusion.type" src="assets/types/{{type}}.png"><br>
                 HP: {{selectedFusion.HP}} <label class="greaterThan"
@@ -62,7 +62,8 @@
                         selectedPokemon.HP}})</label></ng-template><br>
                 Atk: {{selectedFusion.attack}} <label class="greaterThan"
                     *ngIf="selectedFusion.attack >= selectedPokemon.attack;else lessATK">(+{{selectedFusion.attack -
-                    selectedPokemon.attack}})</label><ng-template #lessATK><label class="lessThan">({{selectedFusion.attack
+                    selectedPokemon.attack}})</label><ng-template #lessATK><label
+                        class="lessThan">({{selectedFusion.attack
                         -
                         selectedPokemon.attack}})</label></ng-template><br>
                 Def: {{selectedFusion.defense}} <label class="greaterThan"
@@ -71,7 +72,8 @@
                         class="lessThan">({{selectedFusion.defense -
                         selectedPokemon.defense}})</label></ng-template><br>
                 Sp. Atk: {{selectedFusion.spAttack}} <label class="greaterThan"
-                    *ngIf="selectedFusion.spAttack >= selectedPokemon.spAttack;else lessSPAtk">(+{{selectedFusion.spAttack -
+                    *ngIf="selectedFusion.spAttack >= selectedPokemon.spAttack;else lessSPAtk">(+{{selectedFusion.spAttack
+                    -
                     selectedPokemon.spAttack}})</label><ng-template #lessSPAtk><label
                         class="lessThan">({{selectedFusion.spAttack -
                         selectedPokemon.spAttack}})</label></ng-template><br>
@@ -83,7 +85,8 @@
                         selectedPokemon.spDefense}})</label></ng-template><br>
                 Speed: {{selectedFusion.speed}} <label class="greaterThan"
                     *ngIf="selectedFusion.speed >= selectedPokemon.speed;else lessSpeed">(+{{selectedFusion.speed -
-                    selectedPokemon.speed}})</label><ng-template #lessSpeed><label class="lessThan">({{selectedFusion.speed -
+                    selectedPokemon.speed}})</label><ng-template #lessSpeed><label
+                        class="lessThan">({{selectedFusion.speed -
                         selectedPokemon.speed}})</label></ng-template><br>
                 BST: {{selectedFusion.BST}} <label class="greaterThan"
                     *ngIf="selectedFusion.BST >= selectedPokemon.BST;else lessBST">(+{{selectedFusion.BST
@@ -92,7 +95,11 @@
                         selectedPokemon.BST}})</label></ng-template><br>
                 Abilities: {{selectedFusion.abilities | abilityDisplay}}<br>
                 <br>
-                Hidden abilities are denoted with brackets
+                Hidden abilities are denoted with brackets<br><br>
+                <div *ngIf="selectedFusion.sprites != null">
+                    <p-button *ngIf="selectedFusion.sprites.length > 1" label="Next Sprite"
+                        (onClick)="nextSprite()"></p-button>
+                </div>
             </p-card>
         </div>
     </div>
