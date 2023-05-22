@@ -42,10 +42,10 @@ export class FusefinderComponent {
   }]
   selectedLegendaryFilter = this.legendaryFilters[0].filter
 
-  readonly spriteDict: {[headID: string]: string[]} = spriteList
+  readonly spriteDict: { [headID: string]: { [bodyID: string]: string[] } } = spriteList
   spriteFilters: { name: string, filter: { (val: fusedpokemon): boolean } }[] = [{ name: "Any sprites", filter: () => { return true } }, {
     name: "Custom Sprites Only", filter: (a) => {
-      if (this.spriteDict[a.headGameID.toString()].includes(a.bodyGameID.toString())) { return true }
+      if (this.spriteDict[a.headGameID.toString()][a.bodyGameID.toString()]) { return true }
       return false
     }
   }]
@@ -128,7 +128,6 @@ export class FusefinderComponent {
     if (id < 252 || pokemon.IDList[id]) {
       return true
     }
-
     return false;
   }
 
@@ -176,5 +175,12 @@ export class FusefinderComponent {
       abilityList.push({ name: abilityPair[0], isHidden: Boolean(JSON.parse(abilityPair[1])) })
     })
     return abilityList
+  }
+
+  getSprite(val: fusedpokemon, index:number): string {
+    let spriteLocation = "https://raw.githubusercontent.com//SneedSeedFeed//FusionFinderAssets//main//CustomBattlers//"
+    
+
+    return spriteLocation + `${val.headGameID}\\${val.sprites[index]}`
   }
 }

@@ -53,7 +53,7 @@
         </div>
         <div class="third">
             <p-card *ngIf="selectedFusion" id="fusion">
-                <img *ngIf="selectedFusion.imgName != null" [src]="selectedFusion.imgName"> <br>
+                <img *ngIf="selectedFusion.sprites != null" [src]="getSprite(selectedFusion,0)"> <br>
                 {{selectedFusion.name}} <br>
                 <img *ngFor="let type of selectedFusion.type" src="assets/types/{{type}}.png"><br>
                 HP: {{selectedFusion.HP}} <label class="greaterThan"

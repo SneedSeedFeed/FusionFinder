@@ -1,5 +1,8 @@
 import { pokemon } from "./pokemon";
 
+//@ts-ignore
+import spriteList from '../../../assets/spritelist.json'
+
 export class fusedpokemon extends pokemon {
     body: string;
     head: string;
@@ -7,7 +10,9 @@ export class fusedpokemon extends pokemon {
     headID: number;
     headGameID: number;
     bodyGameID: number;
-    imgName: string | null;
+    sprites: string[];
+
+    static readonly spriteDict: {[headID: string]: {[bodyID: string]: string[]}} = spriteList
 
     //Manually compiled dictionary of every pokemon that has a special exception in which type it gives
     //These IDs are the NATDEX ID, NOT INFINITE FUSION DEX
@@ -71,7 +76,7 @@ export class fusedpokemon extends pokemon {
         this.bodyID = body.id
         this.headGameID = head.newdexID
         this.bodyGameID = body.newdexID
-        this.imgName = "https://raw.githubusercontent.com/SneedSeedFeed/FusionFinderAssets/main/CustomBattlers/" + head.newdexID + "." + body.newdexID + ".png"
+        this.sprites = fusedpokemon.spriteDict[this.headGameID][this.bodyGameID]
     }
 
     //Works out the type.
