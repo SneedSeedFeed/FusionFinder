@@ -105,7 +105,18 @@ export class FusefinderComponent {
     return hasAbility
   };
 
+  nameSearch: string = ""
+  nameSearchFunc: { (val: fusedpokemon): boolean } = (val) => {
+    if (this.nameSearch.trim() == "") { return true }
+    let search = this.nameSearch.toUpperCase().trim()
+    if (val.body.toUpperCase().includes(search) || val.head.toUpperCase().includes(search)) {
+      return true
+    }
+    return false
+  }
+
   spriteIndex: number = 0
+
 
   //Load data from pokedex.json (has been manually editted to make typings up to date, stats may be slightly off)
   constructor() {
@@ -146,7 +157,7 @@ export class FusefinderComponent {
   updateFilters() {
     if (this.selectedPokemon) {
       console.time("Filtered in")
-      this.filteredfusions = this.allFusions.filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).filter(this.sliderFilter).filter(this.selectedSpriteFilter).sort(this.selectedSort.sort)
+      this.filteredfusions = this.allFusions.filter(this.selectedFilter.filter).filter(this.abilitySearchFunc).filter(this.selectedLegendaryFilter).filter(this.sliderFilter).filter(this.selectedSpriteFilter).filter(this.nameSearchFunc).sort(this.selectedSort.sort)
       console.timeEnd("Filtered in")
     }
   }

@@ -33,9 +33,12 @@
         </div>
         <div class="third">
             <p-card id="list">
-                <p-dropdown autoWidth="true" [filter]="true" [style]="{'width':'300px'}" [virtualScroll]="true"
-                    [virtualScrollItemSize]="38" placeholder="Select a Pokemon" [options]="pokedex" optionLabel="name"
-                    [(ngModel)]="selectedPokemon" (onChange)="update()"></p-dropdown>
+                <div class="searchContainer">
+                    <p-dropdown autoWidth="true" [filter]="true" [style]="{'width':'100%'}" [virtualScroll]="true"
+                        [virtualScrollItemSize]="38" placeholder="Select a Pokemon" [options]="pokedex"
+                        optionLabel="name" [(ngModel)]="selectedPokemon" (onChange)="update()"></p-dropdown>
+                    <input pInputText (keyup)="updateFilters()" placeholder="Search list" [(ngModel)]="nameSearch">
+                </div>
                 <p-virtualScroller [value]="filteredfusions" [style]="{'width': '100%'}" scrollHeight="500px"
                     [itemSize]="38">
                     <ng-template pTemplate="fusion" let-fusion>

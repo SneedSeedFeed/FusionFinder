@@ -58,3 +58,8 @@ p-slider {
 .greaterThan{
     color: green
 }
+
+.searchContainer{
+    display: grid;
+    grid-template-columns: auto auto;
+}
