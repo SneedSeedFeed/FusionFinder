@@ -13,6 +13,7 @@ pub struct Pokemon {
     pub special_attack: u8,
     pub special_defense: u8,
     pub speed: u8,
+    pub bst: u16,
     pub primary_type: Type,
     pub secondary_type: Option<Type>,
     pub fusion_type_override: Option<Type>,
@@ -28,6 +29,7 @@ pub struct FusedPokemon {
     pub special_attack: u8,
     pub special_defense: u8,
     pub speed: u8,
+    pub bst: u16,
     pub primary_type: Type,
     pub secondary_type: Option<Type>,
     pub abilities: Vec<Ability>,
@@ -85,18 +87,15 @@ impl FusedPokemon {
             primary_type,
             secondary_type,
             abilities,
+            bst: hp as u16
+                + attack as u16
+                + defense as u16
+                + special_attack as u16
+                + special_defense as u16
+                + speed as u16,
             head_id: head.id,
             body_id: body.id,
         }
-    }
-
-    pub fn get_bst(&self) -> u16 {
-        self.hp as u16
-            + self.attack as u16
-            + self.defense as u16
-            + self.special_attack as u16
-            + self.special_defense as u16
-            + self.speed as u16
     }
 }
 
@@ -110,17 +109,6 @@ fn calc_head_stat(head: u8, body: u8) -> u8 {
     let head = head as f32;
     let body = body as f32;
     (2f32 * (head / 3f32) + (body / 3f32)).floor() as u8
-}
-
-impl Pokemon {
-    pub fn get_bst(&self) -> u16 {
-        self.hp as u16
-            + self.attack as u16
-            + self.defense as u16
-            + self.special_attack as u16
-            + self.special_defense as u16
-            + self.speed as u16
-    }
 }
 
 #[cfg(test)]
@@ -137,6 +125,7 @@ mod test {
             special_attack: 150,
             special_defense: 140,
             speed: 90,
+            bst: 670,
             primary_type: Type::Water,
             secondary_type: None,
             fusion_type_override: None,
@@ -152,6 +141,7 @@ mod test {
             special_attack: 120,
             special_defense: 120,
             speed: 120,
+            bst: 720,
             primary_type: Type::Normal,
             secondary_type: None,
             fusion_type_override: None,
@@ -168,7 +158,7 @@ mod test {
         assert_eq!(fusion.speed, 110);
         assert_eq!(fusion.primary_type, Type::Water);
         assert_eq!(fusion.secondary_type, Some(Type::Normal));
-        assert_eq!(fusion.get_bst(), 712);
+        assert_eq!(fusion.bst, 712);
 
         let fusion = FusedPokemon::fuse(&arceus, &kyogre);
 
@@ -181,6 +171,6 @@ mod test {
         assert_eq!(fusion.speed, 100);
         assert_eq!(fusion.primary_type, Type::Normal);
         assert_eq!(fusion.secondary_type, Some(Type::Water));
-        assert_eq!(fusion.get_bst(), 675);
+        assert_eq!(fusion.bst, 675);
     }
 }

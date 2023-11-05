@@ -30,6 +30,12 @@ impl From<RawPokemon> for Pokemon {
             special_attack: raw.base.special_attack,
             special_defense: raw.base.special_defense,
             speed: raw.base.speed,
+            bst: raw.base.hp as u16
+                + raw.base.attack as u16
+                + raw.base.defense as u16
+                + raw.base.special_attack as u16
+                + raw.base.special_defense as u16
+                + raw.base.speed as u16,
             primary_type: raw.types[0],
             secondary_type: raw.types.get(1).copied(),
             fusion_type_override: raw.fusion_type_override,
