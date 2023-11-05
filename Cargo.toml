@@ -6,4 +6,19 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+gloo = "0.10.0"
 leptos = { version = "0.5.2", features = ["csr"] }
+serde = { version = "1.0.190", features = ["derive"] }
+serde_json = "1.0.108"
+bincode = {version = "1.3.3"}
+fusion_datatypes = { path = "fusion_datatypes" }
+
+[build-dependencies]
+fusion_datatypes = { path = "fusion_datatypes" }
+serde_json = "1.0.108"
+serde = { version = "1.0.190", features = ["derive"] }
+bincode = {version = "1.3.3"}
+
+[workspace]
+members = ["fusion_datatypes",]
+resolver = "2"
