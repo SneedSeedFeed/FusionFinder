@@ -3,20 +3,27 @@ use gloo::console::log;
 use leptos::*;
 use std::{collections::HashMap, rc::Rc};
 
+const NUMBER_OF_POKEMON: usize = 426;
+const NUMBER_OF_FUSIONS: usize = (NUMBER_OF_POKEMON * 2) - 1;
+
 fn main() {
     leptos::mount_to_body(|| view! { <App/> })
 }
 
 #[component]
 fn App() -> impl IntoView {
-    let pokemon: Vec<Pokemon> =
-        bincode::deserialize(include_bytes!("../infinite_dex.bin")).unwrap();
+    let pokemon: Rc<Vec<Pokemon>> =
+        bincode::deserialize::<Vec<Pokemon>>(include_bytes!("../infinite_dex.bin"))
+            .unwrap()
+            .into();
     let (selected_fusion, set_selected_fusion) = create_signal::<Option<Rc<FusedPokemon>>>(None);
 
-    let sprite_map: HashMap<(u16, u16), u8> =
-        bincode::deserialize(include_bytes!("../sprite_count.bin")).unwrap();
+    let sprite_map: Rc<HashMap<(u16, u16), u8>> =
+        bincode::deserialize::<HashMap<(u16, u16), u8>>(include_bytes!("../sprite_count.bin"))
+            .unwrap()
+            .into();
     view! {
-        <section class="flex justify-center min-h-screen bg-slate-600">
+        <section class="flex justify-center min-h-screen max-h-screen bg-slate-600">
             <div class="w-1/4 p-8 m-8 rounded-md bg-stone-500 drop-shadow-xl">"Filter column"</div>
             <div class="w-1/4 p-8 m-8 rounded-md bg-stone-500 drop-shadow-xl"><SearchColumn dex=pokemon fusion_select_set=set_selected_fusion/></div>
             <div class="w-1/4 p-8 m-8 rounded-md bg-stone-500 drop-shadow-xl"><InfoColumn selection=selected_fusion sprite_map=sprite_map/></div>
@@ -27,9 +34,8 @@ fn App() -> impl IntoView {
 #[component]
 fn InfoColumn(
     selection: ReadSignal<Option<Rc<FusedPokemon>>>,
-    sprite_map: HashMap<(u16, u16), u8>,
+    sprite_map: Rc<HashMap<(u16, u16), u8>>,
 ) -> impl IntoView {
-    let sprite_map = Rc::new(sprite_map);
     view! {
         <div>
             <div hidden={move || selection.get().is_none()}>{move || {
@@ -46,7 +52,7 @@ fn InfoColumn(
                             letters.iter().map(|letter| view!{<img src={format!("https://raw.githubusercontent.com/SneedSeedFeed/FusionFinderAssets/rust/{}.{}{}.png", head_id, body_id, letter)}/>}).collect_view()
                         }
                         else{
-                            view!{"No sprites"}.into_view()
+                            view!{"No Custom Sprites for this Pokémon ;w;"}.into_view()
                         }
                     }
                     </div>
@@ -70,12 +76,11 @@ fn InfoColumn(
 
 #[component]
 fn SearchColumn(
-    dex: Vec<Pokemon>,
+    dex: Rc<Vec<Pokemon>>,
     fusion_select_set: WriteSignal<Option<Rc<FusedPokemon>>>,
 ) -> impl IntoView {
     let (fusions, fusions_set) = create_signal::<Option<Vec<Rc<FusedPokemon>>>>(None);
     // I want to read the values of dex from multiple places at once, hence Rc
-    let dex = Rc::new(dex);
 
     view! {
         <select on:change={
@@ -87,20 +92,24 @@ fn SearchColumn(
             <option disabled selected value> "Select a Pokémon" </option>
             {dex.iter().enumerate().map(|(index,pokemon)| view! { <option value={index}>{&pokemon.name}</option> }).collect_view() }
         </select>
-        <div hidden={move ||fusions.get().is_none()}>{move || if let Some(fusions) = fusions.get(){
-            fusions.iter().map(|fusion| view!{<p on:click={
+        {move || if let Some(fusions) = fusions.get(){
+            view!{
+            <div class="overflow-y-scroll max-h-full h-auto mt-4">
+            {fusions.iter().map(|fusion| view!{<p on:click={
                 let cloned_fusion = fusion.clone();
-                move |_| fusion_select_set.set(Some(cloned_fusion.clone()))}>{&fusion.name}</p>}).collect_view()
+                move |_| fusion_select_set.set(Some(cloned_fusion.clone()))}>{&fusion.name}</p>}).collect_view()}
+            </div>
+            }.into_view()
         } else {
             view! {}.into_view()
-        } }</div>
+        }}
     }
 }
 
 // Imperative style is easier than functional style for this due to the loop returning two values at once
 // Doing functional style might be faster but this is fine
 fn generate_fusions(target: usize, dex: &[Pokemon]) -> Vec<Rc<FusedPokemon>> {
-    let mut fusions: Vec<Rc<FusedPokemon>> = Vec::with_capacity(923);
+    let mut fusions: Vec<Rc<FusedPokemon>> = Vec::with_capacity(NUMBER_OF_FUSIONS);
     for (index, pokemon) in dex.iter().enumerate() {
         if index == target {
             continue;
