@@ -13,12 +13,16 @@ serde_json = "1.0.108"
 bincode = {version = "1.3.3"}
 fusion_datatypes = { path = "fusion_datatypes" }
 num-traits = "0.2.17"
+indexmap = { version = "2.1.0", features = ["serde"] }
+build_const = "0.2.2"
 
 [build-dependencies]
 fusion_datatypes = { path = "fusion_datatypes" }
 serde_json = "1.0.108"
 serde = { version = "1.0.190", features = ["derive"] }
+indexmap = { version = "2.1.0", features = ["serde"] }
 bincode = {version = "1.3.3"}
+build_const = "0.2.2"
 
 [workspace]
 members = ["fusion_datatypes",]

@@ -1,21 +1,62 @@
+use std::path::Path;
+
+use build_const::*;
 use fusion_datatypes::*;
-use serde::{Deserialize, Serialize};
+use indexmap::IndexSet;
+use serde::Deserialize;
 
 fn main() {
+    // Generate dex
     let raw_pokemon: Vec<RawPokemon> =
         serde_json::from_str(include_str!("infinite_dex.json")).unwrap();
     let pokemon = raw_pokemon
         .into_iter()
         .map(Pokemon::from)
         .collect::<Vec<_>>();
-    let bytes = bincode::serialize(&pokemon).unwrap();
-    if std::path::Path::new("infinite_dex.bin").exists() {
-        let existing_bytes = std::fs::read("infinite_dex.bin").unwrap();
+    let pokemon_bytes = bincode::serialize(&pokemon).unwrap();
+
+    let number_of_pokemon = pokemon.len();
+    let number_of_fusions = (number_of_pokemon * 2) - 1;
+    create_if_not_exists("infinite_dex.bin", pokemon_bytes);
+
+    // Hash all the abilities
+    let mut abilities_set: IndexSet<String> = IndexSet::new();
+    for pokemon in &pokemon {
+        for ability in &pokemon.abilities {
+            abilities_set.insert(ability.0.clone());
+        }
+    }
+
+    // Put them in order
+    let mut abilities = abilities_set.into_iter().collect::<Vec<_>>();
+    abilities.sort();
+
+    // Re-hash them
+    let abilities_set = abilities
+        .iter()
+        .map(|s| s.as_str())
+        .collect::<IndexSet<_>>();
+    let abilities_bytes = bincode::serialize(&abilities_set).unwrap();
+    create_if_not_exists("abilities.bin", abilities_bytes);
+
+    // Define constants
+    //let path = Path::new("/tmp/constants.rs");
+    //println!("{path:?}");
+    let consts = ConstWriter::for_build("constants").unwrap();
+    let mut consts = consts.finish_dependencies();
+    consts.add_value("NUMBER_OF_POKEMON", "usize", number_of_pokemon);
+    consts.add_value("NUMBER_OF_FUSIONS", "usize", number_of_fusions);
+    consts.finish();
+}
+
+fn create_if_not_exists(path: &str, bytes: Vec<u8>) {
+    if std::path::Path::new(path).exists() {
+        let existing_bytes = std::fs::read(path).unwrap();
         if existing_bytes != bytes {
-            std::fs::write("infinite_dex.bin", bytes).unwrap();
+            std::fs::write(path, bytes).unwrap();
         }
     } else {
-        std::fs::write("infinite_dex.bin", bytes).unwrap();
+        std::fs::write(path, bytes).unwrap();
     }
 }
 
