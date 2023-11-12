@@ -40,8 +40,6 @@ fn main() {
     create_if_not_exists("abilities.bin", abilities_bytes);
 
     // Define constants
-    //let path = Path::new("/tmp/constants.rs");
-    //println!("{path:?}");
     let consts = ConstWriter::for_build("constants").unwrap();
     let mut consts = consts.finish_dependencies();
     consts.add_value("NUMBER_OF_POKEMON", "usize", number_of_pokemon);

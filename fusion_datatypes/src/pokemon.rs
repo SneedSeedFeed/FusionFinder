@@ -39,7 +39,7 @@ pub struct FusedPokemon {
 
 impl FusedPokemon {
     pub fn fuse(head: &Pokemon, body: &Pokemon) -> FusedPokemon {
-        let name = format!("{}/{}", head.name, body.name);
+        let name = format!("{}/{}", head.name, body.name).into();
         let hp = calc_head_stat(head.hp, body.hp);
         let attack = calc_body_stat(head.attack, body.attack);
         let defense = calc_body_stat(head.defense, body.defense);
@@ -118,7 +118,7 @@ mod test {
     fn fuse() {
         let kyogre = Pokemon {
             id: 382,
-            name: "Kyogre".to_string(),
+            name: "Kyogre".into(),
             hp: 100,
             attack: 100,
             defense: 90,
@@ -134,7 +134,7 @@ mod test {
 
         let arceus = Pokemon {
             id: 493,
-            name: "Arceus".to_string(),
+            name: "Arceus".into(),
             hp: 120,
             attack: 120,
             defense: 120,

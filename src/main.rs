@@ -2,7 +2,7 @@ mod filter;
 mod info;
 mod search;
 
-use filter::{FilterColumn, Filters, Sort};
+use filter::{Filter, FilterColumn, Sort};
 use fusion_datatypes::{FusedPokemon, Pokemon, Type};
 use search::SearchColumn;
 
@@ -38,14 +38,14 @@ fn App() -> impl IntoView {
             .into();
 
     // Selection Signals
-    let (selected_fusion, set_selected_fusion) = create_signal::<Option<Rc<FusedPokemon>>>(None);
-    let (selected_pokemon, set_selected_pokemon) = create_signal::<Option<Rc<Pokemon>>>(None);
+    let (selected_fusion, set_selected_fusion) = create_signal::<Option<FusedPokemon>>(None);
+    let (selected_pokemon, set_selected_pokemon) = create_signal::<Option<Pokemon>>(None);
 
     // Sort Signals
     let (selected_sort, set_selected_sort) = create_signal::<Sort>(Sort::None);
 
     // Filter Signals
-    let (filters, set_filters) = create_signal::<Filters>(Filters::default());
+    let (filters, set_filters) = create_signal::<Filter>(Filter::default());
 
     view! {
         <section class="flex justify-center min-h-screen max-h-screen bg-slate-600">
