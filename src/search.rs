@@ -1,6 +1,7 @@
 use crate::filter::{Filter, Sort};
-
+use crate::web_utils::now;
 use fusion_datatypes::{FusedPokemon, Pokemon};
+use gloo::console::log;
 use indexmap::IndexSet;
 use itertools::Itertools;
 use leptos::*;
@@ -45,7 +46,7 @@ pub fn SearchColumn(
             fusions.into_iter()
             .filter(|fusion| filter_state.filter_stats(fusion))
             .filter(|fusion| if filter_state.custom_sprite {sprite_map.get(&(fusion.head_id, fusion.body_id)).is_some()} else {true})
-            .filter(|fusion| if let Some(ability_index) = filter_state.has_ability {fusion.abilities.iter().any(|(ability,_)| ability_map.get_index_of(ability.as_str()).unwrap() == ability_index)} else {true})
+            .filter(|fusion| if let Some(ability_index) = filter_state.has_ability {fusion.abilities.iter().any(|ability| ability_map.get_index_of(ability.0.as_str()).unwrap() == ability_index)} else {true})
             .sorted_by(sort).map(|fusion| view!{<FusionOption fusion=fusion fusion_select_set=fusion_select_set />}).collect_view()
         }
             </div>
@@ -68,6 +69,7 @@ fn FusionOption(
 
     view! {
         <p class="cursor-pointer" on:click=on_click>{&name}</p>
+        <hr/>
     }
 }
 
@@ -93,7 +95,7 @@ fn PokemonSelector(
         .collect_view();
 
     view! {
-        <select on:change=on_change>
+        <select class="bg-surface-b" on:change=on_change>
             <option disabled selected value> "Select a Pokémon" </option>
             {selections}
         </select>
@@ -103,6 +105,7 @@ fn PokemonSelector(
 // Imperative style is easier than functional style for this due to the loop returning two values at once
 // Doing functional style might be faster but this is fine
 fn generate_fusions(target: usize, dex: &[Pokemon]) -> Vec<FusedPokemon> {
+    let start = now();
     let mut fusions: Vec<FusedPokemon> = Vec::with_capacity(NUMBER_OF_FUSIONS);
     for (index, pokemon) in dex.iter().enumerate() {
         if index == target {
@@ -112,5 +115,6 @@ fn generate_fusions(target: usize, dex: &[Pokemon]) -> Vec<FusedPokemon> {
         fusions.push(FusedPokemon::fuse(pokemon, &dex[target]));
     }
     fusions.push(FusedPokemon::fuse(&dex[target], &dex[target]));
+    log!("Fusion Generation: ", now() - start, "ms");
     fusions
 }

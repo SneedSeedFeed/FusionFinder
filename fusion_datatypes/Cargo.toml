@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 serde = { version = "1.0.190", features = ["derive"] }
 derive_more = "0.99.17"
+indexmap = "2.1.0"
+itertools = "0.12.0"

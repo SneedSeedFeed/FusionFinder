@@ -158,7 +158,7 @@ fn AbilitySelect(
     view! {
         <div>
             <label for="ability">"Has Ability: "</label>
-            <select id="ability" on:change=ability_on_change>
+            <select id="ability" class="bg-surface-b" on:change=ability_on_change>
                 <option value="0">"None"</option>
                 {ability_view}
             </select>
@@ -223,14 +223,14 @@ fn StatSlider(for_stat: Stat, set_filters: WriteSignal<Filter>) -> impl IntoView
         <div>
             <label for=id>{label}</label>
             <div id=id>
-                <input
+                <input class="bg-surface-b"
                     type="number"
                     min="0"
                     max=max
                     on:input=number_on_input
                     prop:value=move || value.get()
                 />
-                <input
+                <input class="bg-surface-b"
                     type="range"
                     min="0"
                     max=max
@@ -273,7 +273,7 @@ fn SortSelect(set_sort: WriteSignal<Sort>) -> impl IntoView {
     view! {
         <div>
             <label for="sort">"Sort By: "</label>
-            <select id="sort" on:change=sorts_on_change>
+            <select class="bg-surface-b" id="sort" on:change=sorts_on_change>
                 {sorts_view}
             </select>
         </div>
@@ -334,7 +334,7 @@ fn TypeSelect(set_filters: WriteSignal<Filter>) -> impl IntoView {
     view! {
         <div>
             <label for="type">"Has Type: "</label>
-            <select on:change=type_select_on_change>{types_view}</select>
+            <select class="bg-surface-b" on:change=type_select_on_change>{types_view}</select>
         </div>
     }
 }

@@ -1,7 +1,26 @@
 use super::Type;
+use itertools::concat;
+use itertools::Itertools;
 use serde::{Deserialize, Serialize};
+use std::{cmp::Ordering, collections::HashSet};
 
-type Ability = (String, bool);
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Ability(pub String, pub bool);
+
+impl PartialOrd for Ability {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.1.cmp(&other.1))
+    }
+}
+
+impl Ord for Ability {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.1.cmp(&other.1){
+            ord if ord == Ordering::Equal => ord,
+            _ => self.0.cmp(&other.0),
+        }
+    }
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Pokemon {
@@ -72,9 +91,12 @@ impl FusedPokemon {
             }
         };
 
-        // Quick and dirty clone
-        let mut abilities = head.abilities.clone();
-        abilities.append(&mut body.abilities.clone());
+        let abilities = concat(vec![head.abilities.clone(), body.abilities.clone()])
+            .into_iter()
+            .collect::<HashSet<Ability>>()
+            .into_iter()
+            .sorted()
+            .collect::<Vec<Ability>>();
 
         FusedPokemon {
             name,

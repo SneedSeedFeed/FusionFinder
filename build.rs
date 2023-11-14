@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use build_const::*;
-use fusion_datatypes::*;
+use fusion_datatypes::{*, pokemon::Ability};
 use indexmap::IndexSet;
 use serde::Deserialize;
 
@@ -127,7 +127,7 @@ struct RawProfile {
     pub height: String,
     pub weight: String,
     pub egg: Vec<String>,
-    pub ability: Vec<(String, bool)>,
+    pub ability: Vec<Ability>,
     pub gender: String,
 }
 
