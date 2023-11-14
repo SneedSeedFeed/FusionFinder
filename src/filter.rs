@@ -21,6 +21,21 @@ pub enum Sort {
     Speed,
 }
 
+impl Sort {
+    pub fn sort_fusions(&self, a: &FusedPokemon, b: &FusedPokemon) -> std::cmp::Ordering {
+        match self {
+            Sort::None => std::cmp::Ordering::Equal,
+            Sort::Bst => b.bst.cmp(&a.bst),
+            Sort::Hp => b.hp.cmp(&a.hp),
+            Sort::Attack => b.attack.cmp(&a.attack),
+            Sort::Defense => b.defense.cmp(&a.defense),
+            Sort::SpecialAttack => b.special_attack.cmp(&a.special_attack),
+            Sort::SpecialDefense => b.special_defense.cmp(&a.special_defense),
+            Sort::Speed => b.speed.cmp(&a.speed),
+        }
+    }
+}
+
 impl Display for Sort {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -112,7 +127,12 @@ fn CustomSpriteToggle(set_filters: WriteSignal<Filter>) -> impl IntoView {
         }
     };
 
-    view! { <input on:change=custom_sprite_on_change type="checkbox"/> }
+    view! {
+        <div>
+            <label for="has_sprite">"Has Custom Sprite: "</label>
+            <input id="has_sprite" on:change=custom_sprite_on_change type="checkbox"/>
+        </div>
+    }
 }
 
 #[component]
@@ -136,10 +156,13 @@ fn AbilitySelect(
         .collect_view();
 
     view! {
-        <select on:change=ability_on_change>
-            <option value="0">"None"</option>
-            {ability_view}
-        </select>
+        <div>
+            <label for="ability">"Has Ability: "</label>
+            <select id="ability" on:change=ability_on_change>
+                <option value="0">"None"</option>
+                {ability_view}
+            </select>
+        </div>
     }
 }
 
@@ -247,7 +270,14 @@ fn SortSelect(set_sort: WriteSignal<Sort>) -> impl IntoView {
         .map(|(index, sort)| view! { <option value=index>{sort.to_string()}</option> })
         .collect_view();
 
-    view! { <select on:change=sorts_on_change>{sorts_view}</select> }
+    view! {
+        <div>
+            <label for="sort">"Sort By: "</label>
+            <select id="sort" on:change=sorts_on_change>
+                {sorts_view}
+            </select>
+        </div>
+    }
 }
 
 #[component]
@@ -301,5 +331,10 @@ fn TypeSelect(set_filters: WriteSignal<Filter>) -> impl IntoView {
             .collect_view()
     };
 
-    view! { <select on:change=type_select_on_change>{types_view}</select> }
+    view! {
+        <div>
+            <label for="type">"Has Type: "</label>
+            <select on:change=type_select_on_change>{types_view}</select>
+        </div>
+    }
 }

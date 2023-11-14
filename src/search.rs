@@ -2,6 +2,7 @@ use crate::filter::{Filter, Sort};
 
 use fusion_datatypes::{FusedPokemon, Pokemon};
 use indexmap::IndexSet;
+use itertools::Itertools;
 use leptos::*;
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -23,27 +24,12 @@ pub fn SearchColumn(
     let (fusions, fusions_set) = create_signal::<Option<Vec<FusedPokemon>>>(None);
 
     view! {
-        <select on:change={
-            let dex = dex.clone();
-            move |event| {
-            let index = event_target_value(&event).parse::<usize>().unwrap();
-            pokemon_select_set.set(Some(dex[index].clone()));
-            fusions_set.set(Some(generate_fusions(index, &dex)));
-        }}>
-            <option disabled selected value> "Select a Pokémon" </option>
-            {dex.iter().enumerate().map(|(index,pokemon)| view! { <option value={index}>{&pokemon.name}</option> }).collect_view() }
-        </select>
+        <PokemonSelector pokemon_select_set=pokemon_select_set fusions_set=fusions_set dex=dex />
         {move || if let Some(fusions) = fusions.get(){
             view!{
             <div class="overflow-y-scroll max-h-full h-auto mt-4">
             {
             let filter_state = {move || filters.get()}();
-            let mut fusions_to_display = fusions.into_iter()
-            // Type filter
-            .filter(|fusion| filter_state.filter_stats(fusion))
-            .filter(|fusion| if filter_state.custom_sprite {sprite_map.get(&(fusion.head_id, fusion.body_id)).is_some()} else {true})
-            .filter(|fusion| if let Some(ability_index) = filter_state.has_ability {fusion.abilities.iter().any(|(ability,_)| ability_map.get_index_of(ability.as_str()).unwrap() == ability_index)} else {true})
-            .collect::<Vec<_>>();
 
             let sort = match {move || selected_sort.get()}() {
                 Sort::None => {|_: &FusedPokemon, _: &FusedPokemon| std::cmp::Ordering::Equal},
@@ -56,19 +42,61 @@ pub fn SearchColumn(
                 Sort::Speed => {|a: &FusedPokemon, b: &FusedPokemon| b.speed.cmp(&a.speed)},
             };
 
-            fusions_to_display.sort_by(sort);
-
-            // We have to clone twice here, once for the closure and once for the view
-            // I hate web development
-            fusions_to_display.iter().map(|fusion| view!{<p class="cursor-pointer" on:click={
-                let fusion=fusion.clone();
-                move |_| fusion_select_set.set(Some(fusion.clone()))}>{&fusion.name}</p>}).collect_view()
+            fusions.into_iter()
+            .filter(|fusion| filter_state.filter_stats(fusion))
+            .filter(|fusion| if filter_state.custom_sprite {sprite_map.get(&(fusion.head_id, fusion.body_id)).is_some()} else {true})
+            .filter(|fusion| if let Some(ability_index) = filter_state.has_ability {fusion.abilities.iter().any(|(ability,_)| ability_map.get_index_of(ability.as_str()).unwrap() == ability_index)} else {true})
+            .sorted_by(sort).map(|fusion| view!{<FusionOption fusion=fusion fusion_select_set=fusion_select_set />}).collect_view()
         }
             </div>
             }.into_view()
         } else {
             view! {}.into_view()
         }}
+    }
+}
+
+#[component]
+fn FusionOption(
+    fusion: FusedPokemon,
+    fusion_select_set: WriteSignal<Option<FusedPokemon>>,
+) -> impl IntoView {
+    // Doing this lets us just clone the string instead of cloning the whole pokemon twice over
+    let name = fusion.name.clone();
+
+    let on_click = move |_| fusion_select_set.set(Some(fusion.clone()));
+
+    view! {
+        <p class="cursor-pointer" on:click=on_click>{&name}</p>
+    }
+}
+
+#[component]
+fn PokemonSelector(
+    pokemon_select_set: WriteSignal<Option<Pokemon>>,
+    fusions_set: WriteSignal<Option<Vec<FusedPokemon>>>,
+    dex: Rc<Vec<Pokemon>>,
+) -> impl IntoView {
+    let on_change = {
+        let dex = dex.clone();
+        move |event| {
+            let index = event_target_value(&event).parse::<usize>().unwrap();
+            pokemon_select_set.set(Some(dex[index].clone()));
+            fusions_set.set(Some(generate_fusions(index, &dex)));
+        }
+    };
+
+    let selections = dex
+        .iter()
+        .enumerate()
+        .map(|(index, pokemon)| view! { <option value={index}>{&pokemon.name}</option> })
+        .collect_view();
+
+    view! {
+        <select on:change=on_change>
+            <option disabled selected value> "Select a Pokémon" </option>
+            {selections}
+        </select>
     }
 }
 
