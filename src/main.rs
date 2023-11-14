@@ -47,11 +47,13 @@ fn App() -> impl IntoView {
     // Filter Signals
     let (filters, set_filters) = create_signal::<Filter>(Filter::default());
 
+    const COL_STYLE: &str = "w-1/4 p-8 m-8 rounded-md bg-stone-500 drop-shadow-xl";
+
     view! {
         <section class="flex justify-center min-h-screen max-h-screen bg-slate-600">
-            <div class="w-1/4 p-8 m-8 rounded-md bg-stone-500 drop-shadow-xl"><FilterColumn set_filters=set_filters set_sort=set_selected_sort ability_map=abilities.clone()/></div>
-            <div class="w-1/4 p-8 m-8 rounded-md bg-stone-500 drop-shadow-xl"><SearchColumn ability_map=abilities sprite_map=sprite_map.clone() filters=filters selected_sort=selected_sort dex=pokemon pokemon_select_set=set_selected_pokemon fusion_select_set=set_selected_fusion/></div>
-            <div class="w-1/4 p-8 m-8 rounded-md bg-stone-500 drop-shadow-xl"><InfoColumn selected_fusion=selected_fusion selected_pokemon=selected_pokemon sprite_map=sprite_map/></div>
+            <div class=COL_STYLE><FilterColumn set_filters=set_filters set_sort=set_selected_sort ability_map=abilities.clone()/></div>
+            <div class=COL_STYLE><SearchColumn ability_map=abilities sprite_map=sprite_map.clone() filters=filters selected_sort=selected_sort dex=pokemon pokemon_select_set=set_selected_pokemon fusion_select_set=set_selected_fusion/></div>
+            <div class=COL_STYLE><InfoColumn selected_fusion=selected_fusion selected_pokemon=selected_pokemon sprite_map=sprite_map/></div>
         </section>
     }
 }
